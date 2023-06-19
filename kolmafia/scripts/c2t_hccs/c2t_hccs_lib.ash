@@ -11,20 +11,6 @@ import <c2t_lib.ash>
 //returns number of banishes left
 int c2t_hccs_banishesLeft();
 
-//input is either `info` or `warn`
-//returns color to print based on input and whether user is in dark mode or not
-string c2t_hccs_color(string str);
-
-//uses a skill from an equipment that needs to be equipped to use
-boolean c2t_hccs_equipCast(item ite,skill ski);
-boolean c2t_hccs_equipCast(skill ski,item ite);
-
-//wrapper for adv1() to double check that adventures are free
-//aborts if turn is used
-//returns true if turn not used
-boolean c2t_hccs_freeAdv(location loc);
-boolean c2t_hccs_freeAdv(location loc,int num,string str);
-
 //returns number of free crafts left from passive skills only
 int c2t_hccs_freeCraftsLeft();
 
@@ -56,17 +42,12 @@ boolean c2t_hccs_isCleaverNow();
 //mostly a wrapper for c2t_joinClan()
 boolean c2t_hccs_joinClan(string s);
 
-//returns the singular or plural form of a word based on number
-string c2t_hccs_plural(int number,string singular,string plural,boolean includeNumber);
-string c2t_hccs_plural(int number,string singular,string plural);
-
-//wrapper for print() to print message in correct color
-void c2t_hccs_printInfo(string str);
-void c2t_hccs_printWarn(string str);
-
 //pull 1 of an item from storage if not already have it
 //returns true in the case of pulling an item or if the item already is available
 boolean c2t_hccs_pull(item ite);
+
+//rudamentary mp restoration using free rests and magical sausages
+boolean c2t_hccs_restoreMp();
 
 
 /*===============
@@ -87,66 +68,8 @@ int c2t_hccs_banishesLeft() {
 	return out;
 }
 
-string c2t_hccs_color(string str) {
-	switch (str) {
-		default:
-			return '';
-		case 'err':
-		case 'error':
-		case 'warn':
-			return 'red';
-		case 'info':
-			if (is_dark_mode())
-				return 'teal';
-			return 'blue';
-	}
-}
-
-boolean c2t_hccs_equipCast(skill ski,item ite) {
-	return c2t_hccs_equipCast(ite,ski);
-}
-boolean c2t_hccs_equipCast(item ite,skill ski) {
-	//adapated from c2t_cast
-	item last = $item[none];
-	slot slo = ite.to_slot();
-	boolean out = false;
-
-	if (slo == $slot[none]) {
-		c2t_hccs_printWarn(`c2t_hccs_equipCast: "{ite}" is not something that can be equipped`);
-		return false;
-	}
-
-	//swap in item
-	if (!have_equipped(ite)) {
-		last = equipped_item(slo);
-		equip(slo,ite);
-	}
-
-	out = use_skill(1,ski);
-
-	//reequip previous item
-	if (last != $item[none])
-		equip(slo,ite);
-
-	return out;
-}
-
-boolean c2t_hccs_freeAdv(location loc) {
-	return c2t_hccs_freeAdv(loc,-1,"");
-}
-boolean c2t_hccs_freeAdv(location loc,int num,string str) {
-	int start = my_turncount();
-	adv1(loc,num,str);
-	if (my_turncount() > start)
-		abort(`turn used: {loc}`);
-	return true;
-}
-
 int c2t_hccs_freeCraftsLeft() {
 	int out = 0;
-	//only crafting potions, so cookbookbat fine to add here for now
-	if (have_familiar($familiar[cookbookbat]))
-		out += 5 - get_property("_cookbookbatCrafting").to_int();
 	if (have_skill($skill[rapid prototyping]))
 		out += 5 - get_property("_rapidPrototypingUsed").to_int();
 	if (have_skill($skill[expert corner-cutter]))
@@ -161,8 +84,6 @@ int c2t_hccs_freeKillsLeft() {
 	if (have_skill($skill[shattering punch]))
 		n += 3 - get_property("_shatteringPunchUsed").to_int();
 	if (have_skill($skill[gingerbread mob hit]) && !get_property("_gingerbreadMobHitUsed").to_boolean())
-		n++;
-	if (available_amount($item[jurassic parka]) > 0 && have_effect($effect[everything looks yellow]) == 0)
 		n++;
 	return n;
 }
@@ -184,7 +105,7 @@ boolean c2t_hccs_getEffect(effect eff) {
 				break;
 			}
 	if (cmd.starts_with("cargo ")) {
-		c2t_hccs_printWarn(`aborted an attempt to use cargo shorts for {eff}`);
+		print(`aborted an attempt to use cargo shorts for {eff}`,"red");
 		return false;
 	}
 
@@ -195,7 +116,7 @@ boolean c2t_hccs_getEffect(effect eff) {
 		ski = tmp.to_skill();
 
 		if (!c2t_hccs_haveUse(ski)) {
-			c2t_hccs_printInfo(`Info: don't have the skill "{ski}" to get the "{eff}" effect`);
+			print(`Info: don't have the skill "{ski}" to get the "{eff}" effect`);
 			return false;
 		}
 	}
@@ -213,7 +134,7 @@ boolean c2t_hccs_getEffect(effect eff) {
 		ite = tmp.to_item();
 
 		if (!retrieve_item(ite)) {
-			c2t_hccs_printInfo(`Info: "{ite}" not retrieved to get "{eff}"`);
+			print(`Info: "{ite}" not retrieved to get "{eff}"`);
 			return false;
 		}
 		use(ite);
@@ -225,7 +146,7 @@ boolean c2t_hccs_getEffect(effect eff) {
 }
 
 void c2t_hccs_getFax(monster mon) {
-	c2t_hccs_printInfo(`getting fax of {mon}`);
+	print(`getting fax of {mon}`,"blue");
 	cli_execute("chat");
 	for i from 1 to 3 {
 		if (mon == $monster[factory worker (female)]) {
@@ -259,7 +180,7 @@ boolean c2t_hccs_haveUse(int n,skill ski) {
 	if (!have_skill(ski))
 		return false;
 	if (my_mp() < mp_cost(ski)*n)
-		restore_mp(mp_cost(ski)*n);
+		c2t_hccs_restoreMp();
 	return use_skill(n,ski);
 }
 
@@ -276,25 +197,28 @@ boolean c2t_hccs_joinClan(string s) {
 	return true;
 }
 
-string c2t_hccs_plural(int number,string singular,string plural) {
-	return c2t_hccs_plural(number,singular,plural,true);
-}
-string c2t_hccs_plural(int number,string singular,string plural,boolean includeNumber) {
-	return `{includeNumber ? number + " " : ""}{number == 1 ? singular : plural}`;
-}
-
-void c2t_hccs_printInfo(string str) {
-	print(str,c2t_hccs_color('info'));
-}
-void c2t_hccs_printWarn(string str) {
-	print(str,c2t_hccs_color('warn'));
-}
-
 boolean c2t_hccs_pull(item ite) {
-	if (pulls_remaining() > 0 && !can_interact() && !in_hardcore() && item_amount(ite) == 0 && available_amount(ite) == 0 && storage_amount(ite) > 0)
+	if(!can_interact() && !in_hardcore() && item_amount(ite) == 0 && available_amount(ite) == 0 && storage_amount(ite) > 0 && pulls_remaining() > 0)
 		return take_storage(1,ite);
 	else if (available_amount(ite) > 0)
 		return true;
 	return false;
+}
+
+boolean c2t_hccs_restoreMp() {
+	int start = my_mp();
+	int total = total_free_rests();
+	int used = get_property("timesRested").to_int();
+
+	if (my_maxmp() > 500 && retrieve_item($item[magical sausage]))
+		eat($item[magical sausage]);
+	else if (total-used > 0)
+		cli_execute("rest free");
+	else if (retrieve_item($item[magical sausage]))
+		eat($item[magical sausage]);
+	else
+		print("Unable to recover MP with magical sausages or free rests","red");
+
+	return my_mp() > start;
 }
 

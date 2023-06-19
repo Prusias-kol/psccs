@@ -29,23 +29,16 @@ void main() {
 		};
 
 	string [string] disableable = {
-		"c2t_hccs_disable.autumnatonItem":"will skip getting the 25% item drop potion with autumn-aton",
 		"c2t_hccs_disable.backupCamera":"will not use the 'back-up to your last enemy' skill",
 		"c2t_hccs_disable.briefcase":"no cranks will be used; however, banishes may still be used",
-		"c2t_hccs_disable.closedCircuitPayPhone":"will not do anything involving shadow rifts",
 		"c2t_hccs_disable.cloverItem":"11-leaf clover will not be used for limerick dungeon lucky adventure",
-		"c2t_hccs_disable.combatLoversLocket":"no monsters will be summoned from combat lover's locket",
 		"c2t_hccs_disable.latteFishing":"will not use extra banishes to fish for item drop enhancement for latte",
+		"c2t_hccs_disable.combatLoversLocket":"no monsters will be summoned from combat lover's locket",
 		"c2t_hccs_disable.melodramedary":"melodramedary will not be used to try to save turns on weapon and spell tests",
 		"c2t_hccs_disable.pantogram":"no pants to try to save turns on hot, non-combat, or spell tests",
 		"c2t_hccs_disable.pillkeeper":"no pill popping from pillkeeper, free or otherwise",
-		"c2t_hccs_disable.pocketProfessor":"no pocket professor copies will be used for leveling",
-		"c2t_hccs_disable.portscan":"if you are dying to government agents, this will disable fighting them",
 		"c2t_hccs_disable.powerPlant":"power plant will not be used for the item test (or elsewhere)",
 		"c2t_hccs_disable.shorterOrderCook":"shorter-order cook will not be used to try to saves turns on the familiar test",
-		"c2t_hccs_disable.vipBeesKnees":"will not drink a Bee's Knees as part of buffing up stats for leveling",
-		"c2t_hccs_disable.vipHotSocks":"will not drink a Hot Socks for familiar test and familiar exp",
-		"c2t_hccs_disable.vipSockdollager":"will not drink a Sockdollager for the weapon and spell tests",
 		"c2t_hccs_disable.vipFloundry":"equipment will not be acquired from the clan floundry"
 		};
 
@@ -71,8 +64,8 @@ void main() {
 				set_property(name,POST[name]=="on"?"true":"false");
 			foreach i,name in thresholdName
 				temp += (i == 0?POST[name]:","+POST[name]);
-			set_property("c2t_hccs_thresholds",temp);
 			set_property("c2t_hccs_workshed",POST["c2t_hccs_workshed"]);
+			set_property("c2t_hccs_thresholds",temp);
 		}
 	}
 
@@ -102,7 +95,7 @@ void main() {
 		c2t_hccs_writeInput(name,"",desc,30,30);
 	foreach name,desc in general
 		c2t_hccs_writeCheckbox(name,desc);
-	c2t_hccs_writeSelect("c2t_hccs_workshed","workshed to be installed and used",$items[none,cold medicine cabinet,diabolic pizza cube,model train set]);
+	c2t_hccs_writeSelect("c2t_hccs_workshed","workshed to be installed and used",$items[none,cold medicine cabinet,diabolic pizza cube,model train set, Asdon Martin keyfob]);
 	write("</tbody></table>");
 
 	//thresholds
@@ -193,4 +186,3 @@ void c2t_hccs_writeFailSuccess() {
 	else if (POST.count() > 1)
 		c2t_hccs_writeText('p class="success"',"Changes saved!");
 }
-

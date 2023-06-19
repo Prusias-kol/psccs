@@ -18,22 +18,16 @@ import <c2t_hccs_preAdv.ash>
 //d--backup camera
 //d--briefcase
 //d--cartography
-//d--cincho de mayo
-//d--closed-circuit pay phone
 //d--clover item
 //d--cold medicine cabinet
 //d--combat lover's locket
-//d--garbage tote
 //d--garden peppermint
 //d--genie
 //d--melodramedary
-//d--model train set
-//d--monkey paw
 //d--numberology
 //d--pantogram
 //d--pillkeeper
 //d--pizza cube
-//d--pocket professor
 //d--power plant
 //d--shorter-order cook
 //d--source terminal
@@ -47,7 +41,7 @@ import <c2t_hccs_preAdv.ash>
 
 //d--backup camera
 //returns true if have backup camera
-boolean c2t_hccs_haveBackupCamera();
+boolean c2t_hccs_backupCamera();
 
 //returns number of uses left
 int c2t_hccs_backupCameraLeft();
@@ -60,30 +54,6 @@ boolean c2t_hccs_briefcase();
 //passes `arg` to Ezandora's briefcase script needing only the core of what is needed, e.g. "hot", "-combat", etc., limited in scope to what is relevant to CS
 //returns true if have the briefcase
 boolean c2t_hccs_briefcase(string arg);
-
-
-//d--cartography
-//returns true if have the map the monsters skill
-boolean c2t_hccs_haveCartography();
-
-//returns true if monster fought
-boolean c2t_hccs_cartography(location loc,monster mon);
-
-
-//d--cincho de mayo
-//returns true if cincho de mayo exists and not disabled
-boolean c2t_hccs_haveCinchoDeMayo();
-
-//uses cincho de mayo skill
-boolean c2t_hccs_cinchoDeMayo(skill ski);
-
-//gets cincho de mayo effect
-boolean c2t_hccs_cinchoDeMayo(effect eff);
-
-
-//d--closed-circuit pay phone
-//returns `true` if have the IotM and not disabled
-boolean c2t_hccs_haveClosedCircuitPayPhone();
 
 
 //d--clover item
@@ -108,11 +78,6 @@ boolean c2t_hccs_combatLoversLocket();
 boolean c2t_hccs_combatLoversLocket(monster mon);
 
 
-//d--garbage tote
-//returns whether have the garbage or not
-boolean c2t_hccs_haveGarbageTote();
-
-
 //d--garden peppermint
 //returns true if garden is peppermint
 boolean c2t_hccs_gardenPeppermint();
@@ -134,19 +99,6 @@ boolean c2t_hccs_melodramedary();
 int c2t_hccs_melodramedarySpit();
 
 
-//d--model train set
-//returns true if have the model train set installed in workshed
-boolean c2t_hccs_haveModelTrainSet();
-
-//sets up model train set
-void c2t_hccs_modelTrainSet();
-
-
-//d--monkey paw
-//gets effect from monkey paw if not already have;returns true if have effect after
-boolean c2t_hccs_monkeyPaw(effect eff);
-
-
 //d--numberology
 //returns true if have at least 1 level of numberology
 boolean c2t_hccs_haveNumberology();
@@ -154,6 +106,14 @@ boolean c2t_hccs_haveNumberology();
 //uses numberology to get adventures
 //returns true if successful
 boolean c2t_hccs_useNumberology();
+
+
+//d--cartography
+//returns true if have the map the monsters skill
+boolean c2t_hccs_haveCartography();
+
+//returns true if monster fought
+boolean c2t_hccs_cartography(location loc,monster mon);
 
 
 //d--pantogram
@@ -175,7 +135,7 @@ boolean c2t_hccs_pillkeeper(effect eff);
 
 //d--pizza cube
 //returns whether the diabolic pizza cube is in the workshed or not
-boolean c2t_hccs_havePizzaCube();
+boolean c2t_hccs_pizzaCube();
 
 //make and eat a pre-determined diabolic pizza based on the effect desired
 //returns whether the correct effect was gained or not
@@ -186,14 +146,6 @@ boolean c2t_hccs_pizzaCube(effect eff);
 boolean c2t_hccs_pizzaCube(item it1,item it2,item it3,item it4);
 
 
-//d--pocket professor
-//returns whether professor is useable
-boolean c2t_hccs_havePocketProfessor();
-
-//returns number of lectures used
-int c2t_hccs_pocketProfessorLectures();
-
-
 //d--power plant
 //returns whether power plant is available or not & harvests if it is
 boolean c2t_hccs_powerPlant();
@@ -202,7 +154,6 @@ boolean c2t_hccs_powerPlant();
 //d--shorter-order cook
 //returns true if have short-order cook
 boolean c2t_hccs_shorterOrderCook();
-
 
 //d--source terminal
 //returns true if have the source terminal
@@ -269,22 +220,16 @@ void c2t_hccs_vote();
 //i--backup camera
 //i--briefcase
 //i--cartography
-//i--cincho de mayo
-//i--closed-circuit pay phone
 //i--clover item
 //i--cold medicine cabinet
 //i--combat lover's locket
-//i--garbage tote
 //i--garden peppermint
 //i--genie
 //i--numberology
 //i--melodramedary
-//i--model train set
-//i--monkey paw
 //i--pantogram
 //i--pillkeeper
 //i--pizza cube
-//i--pocket professor
 //i--power plant
 //i--shorter-order cook
 //i--source terminal
@@ -297,12 +242,12 @@ void c2t_hccs_vote();
 
 
 //i--backup camera
-boolean c2t_hccs_haveBackupCamera() {
+boolean c2t_hccs_backupCamera() {
 	return available_amount($item[backup camera]) > 0
 		&& !get_property("c2t_hccs_disable.backupCamera").to_boolean();
 }
 int c2t_hccs_backupCameraLeft() {
-	if (!c2t_hccs_haveBackupCamera())
+	if (!c2t_hccs_backupCamera())
 		return 0;
 	return 11-get_property('_backUpUses').to_int();
 }
@@ -360,64 +305,6 @@ boolean c2t_hccs_cartography(location loc,monster mon) {
 	return true;
 }
 
-//i--cincho de mayo
-boolean c2t_hccs_haveCinchoDeMayo() {
-	return available_amount($item[cincho de mayo]) > 0;
-}
-boolean c2t_hccs_cinchoDeMayo(skill ski) {
-	if (!c2t_hccs_haveCinchoDeMayo())
-		return false;
-
-	string propNc = "_c2t_hccs_ncForceActive";
-	string propCinch = "_cinchUsed";
-	string start = get_property(propCinch);
-	boolean ncForce = false;
-
-	switch (ski) {
-		default:
-			c2t_hccs_printWarn(`c2t_hccs_cinchoDeMayo() unsupported skill: {ski}`);
-			return false;
-		case $skill[cincho: fiesta exit]:
-			if (get_property(propNc).to_boolean())
-				return true;
-			ncForce = true;
-			break;
-		case $skill[cincho: party soundtrack]:
-			if (have_effect($effect[party soundtrack]) > 0)
-				return true;
-			break;
-		case $skill[cincho: dispense salt and lime]:
-	}
-
-	c2t_hccs_equipCast($item[cincho de mayo],ski);
-
-	if (start != get_property(propCinch)) {
-		if (ncForce)
-			set_property(propNc,true);
-		return true;
-	}
-	abort("Cincho broke. Again.");
-	return false;
-}
-boolean c2t_hccs_cinchoDeMayo(effect eff) {
-	if (have_effect(eff) > 0)
-		return true;
-	if (!c2t_hccs_haveCinchoDeMayo())
-		return false;
-	if (eff != $effect[party soundtrack])
-		return false;
-
-	c2t_hccs_equipCast($item[cincho de mayo],$skill[cincho: party soundtrack]);
-
-	return have_effect(eff) > 0;
-}
-
-//i--closed-circuit pay phone
-boolean c2t_hccs_haveClosedCircuitPayPhone() {
-	return item_amount($item[closed-circuit pay phone]) > 0
-		&& !get_property("c2t_hccs_disable.closedCircuitPayPhone").to_boolean();
-}
-
 //i--clover item
 boolean c2t_hccs_cloverItem() {
 	if (get_property("c2t_hccs_disable.cloverItem").to_boolean())
@@ -442,11 +329,12 @@ boolean c2t_hccs_cloverItem() {
 }
 
 //i--cold medicine cabinet
-boolean c2t_hccs_haveColdMedicineCabinet() {
-	return get_workshed() == $item[cold medicine cabinet];
+boolean c2t_hccs_coldMedicineCabinet() {
+	return (get_campground() contains $item[cold medicine cabinet])
+		&& !get_property("c2t_hccs_disable.coldMedicineCabinet").to_boolean();
 }
 boolean c2t_hccs_coldMedicineCabinet(string arg) {
-	if (!c2t_hccs_haveColdMedicineCabinet())
+	if (!c2t_hccs_coldMedicineCabinet())
 		return false;
 	//only want to get 1 thing at most from the cabinet; also to not break on re-entries
 	if (get_property("_coldMedicineConsults").to_int() > 0)
@@ -473,7 +361,7 @@ boolean c2t_hccs_coldMedicineCabinet(string arg) {
 	run_choice(3);
 
 	//go back to full MP equipment
-	maximize("mp,-equip kramco,-equip i voted",false);
+	maximize("mp,-equip kramco sausage-o-matic&trade;,-equip i voted",false);
 	return true;
 }
 
@@ -505,16 +393,12 @@ boolean c2t_hccs_genie(effect eff) {
 		return false;
 
 	cli_execute(`genie effect {eff}`);
+	
+	set_property("_psccs_wishes_used",get_property("_psccs_wishes_used")+ `,Wished for {eff}`);
 
 	return have_effect(eff) > 0;
 }
 boolean c2t_hccs_genie(monster mon) {
-	//locket wished-for monsters
-	if (!(get_locket_monsters() contains mon)
-		&& item_amount($item[combat lover's locket]) > 0)
-	{
-		equip($slot[acc3],$item[combat lover's locket]);
-	}
 	c2t_hccs_preAdv();
 	if (!c2t_wishFight(mon))
 		return false;
@@ -524,6 +408,7 @@ boolean c2t_hccs_genie(monster mon) {
 
 	if (get_property("lastEncounter") != mon && get_property("lastEncounter") != "Using the Force")
 		return false;
+	set_property("_psccs_wishes_used",get_property("_psccs_wishes_used")+ `,Fought {mon}`);
 	return true;
 }
 
@@ -561,72 +446,6 @@ int c2t_hccs_melodramedarySpit() {
 	return get_property('camelSpit').to_int();
 }
 
-//i--model train set
-boolean c2t_hccs_haveModelTrainSet() return get_workshed() == $item[model train set];
-void c2t_hccs_modelTrainSet() {
-	if (!c2t_hccs_haveModelTrainSet())
-		return;
-	/* train set part reference
-	1: meat
-	2: mp regen
-	3: all stats
-	4: hot resist, cold damage
-	5: stench resist, spooky damage
-	6: wood, joiners, or stats (orc chasm bridge stuff); never good for CS
-	7: candy
-	8: double next stop
-	9: cold resist, stench damage
-	11: spooky resist, sleaze damage
-	12: sleaze resist, hot damage
-	13: monster level
-	14: mox stats
-	15: basic booze
-	16: mys stats
-	17: mus stats
-	18: food drop buff
-	19: copy last food drop
-	20: ore
-	*/
-
-	int main,alt1,alt2;
-	switch (my_primestat()) {
-		default:abort("broke stat?");
-		case $stat[muscle]:
-			main = 17;//mus
-			alt1 = 16;//mys
-			alt2 = 14;//mox
-			break;
-		case $stat[mysticality]:
-			main = 16;
-			alt1 = 14;
-			alt2 = 17;
-			break;
-		case $stat[moxie]:
-			main = 14;
-			alt1 = 16;
-			alt2 = 17;
-	}
-
-	if (visit_url("campground.php?action=workshed",false,true).contains_text('value="Save Train Set Configuration"'))
-		//meat,double,main,all stats,alt1,alt2,ML,hot resist
-		visit_url(`choice.php?pwd&whichchoice=1485&option=1&slot[0]=1&slot[1]=8&slot[2]={main}&slot[3]=3&slot[4]={alt1}&slot[5]={alt2}&slot[6]=13&slot[7]=4`,true,true);
-
-	//let mafia know we're not stuck in the choice
-	visit_url("main.php");
-}
-
-//i--monkey paw
-boolean c2t_hccs_monkeyPaw(effect eff) {
-	if (have_effect(eff) > 0)
-		return true;
-	if (available_amount($item[cursed monkey's paw]) == 0)
-		return false;
-	if (get_property("_monkeyPawWishesUsed").to_int() >= 5)
-		return false;
-
-	return monkey_paw(eff) && have_effect(eff) > 0;
-}
-
 //i--pantogram
 void c2t_hccs_pantogram() c2t_hccs_pantogram("spell");
 void c2t_hccs_pantogram(string type) {
@@ -659,9 +478,6 @@ void c2t_hccs_pantogram(string type) {
 		visit_url("desc_item.php?whichitem=508365377",false,true);//attempted fix for very rare bug where all pants mods aren't recorded by mafia
 	}
 }
-
-//i--garbage tote
-boolean c2t_hccs_haveGarbageTote() return available_amount($item[january's garbage tote]) > 0;
 
 //i--garden peppermint
 boolean c2t_hccs_gardenPeppermint() return get_campground() contains $item[peppermint pip packet];
@@ -698,20 +514,21 @@ boolean c2t_hccs_pillkeeper(effect eff) {
 }
 
 //i--pizza cube
-boolean c2t_hccs_havePizzaCube() {
-	return get_workshed() == $item[diabolic pizza cube];
+boolean c2t_hccs_pizzaCube() {
+	return (get_campground() contains $item[diabolic pizza cube])
+		&& !get_property("c2t_hccs_disable.pizzaCube").to_boolean();
 }
 boolean c2t_hccs_pizzaCube(effect eff) {
 	if (available_amount($item[diabolic pizza]) > 0) {
-		c2t_hccs_printWarn("pizza found while trying to make one, so eating it");
+		print("pizza found while trying to make one, so eating it","red");
 		eat($item[diabolic pizza]);
 	}
 	if (have_effect(eff) > 0)
 		return true;
-	if (!c2t_hccs_havePizzaCube())
+	if (!c2t_hccs_pizzaCube())
 		return false;
 	if (my_fullness() + 3 > fullness_limit()) {
-		c2t_hccs_printWarn("no organs space for a pizza");
+		print("no organs space for a pizza","red");
 		return false;
 	}
 
@@ -809,19 +626,19 @@ boolean c2t_hccs_pizzaCube(effect eff) {
 	return have_effect(eff) > 0;
 }
 boolean c2t_hccs_pizzaCube(item it1,item it2,item it3,item it4) {
-	if (!c2t_hccs_havePizzaCube())
+	if (!c2t_hccs_pizzaCube())
 		return false;
 	if (my_fullness() + 3 > fullness_limit()) {
-		c2t_hccs_printWarn("no organ space for a pizza");
+		print("no organ space for a pizza","red");
 		return false;
 	}
 	if (available_amount($item[diabolic pizza]) > 0) {
-		c2t_hccs_printWarn("pizza found while trying to make one, so eating that instead");
+		print("pizza found while trying to make one, so eating that instead","red");
 		eat($item[diabolic pizza]);
 		return true;
 	}
 	if (available_amount(it1) == 0 || available_amount(it2) == 0 || available_amount(it3) == 0 || available_amount(it4) == 0) {
-		c2t_hccs_printWarn("missing ingredients for pizza");
+		print("missing ingredients for pizza","red");
 		return false;
 	}
 
@@ -836,13 +653,6 @@ boolean c2t_hccs_pizzaCube(item it1,item it2,item it3,item it4) {
 	eat($item[diabolic pizza]);
 	return true;
 }
-
-//i--pocket professor
-boolean c2t_hccs_havePocketProfessor() {
-	return have_familiar($familiar[pocket professor])
-		&& !get_property("c2t_hccs_disable.pocketProfessor").to_boolean();
-}
-int c2t_hccs_pocketProfessorLectures() return get_property("_pocketProfessorLectures").to_int();
 
 //i--power plant
 boolean c2t_hccs_powerPlant() {
@@ -874,12 +684,9 @@ boolean c2t_hccs_haveSourceTerminal() {
 boolean c2t_hccs_haveSourceTerminalSkill(skill ski) {
 	if (!c2t_hccs_haveSourceTerminal())
 		return false;
-
 	string edu = `{ski.to_lower_case()}.edu`;
-
 	if (!get_property("sourceTerminalEducateKnown").contains_text(edu))
 		return false;
-
 	switch (edu) {
 		default:
 			return false;
@@ -891,8 +698,7 @@ boolean c2t_hccs_haveSourceTerminalSkill(skill ski) {
 boolean c2t_hccs_sourceTerminalInit() {
 	if (!c2t_hccs_haveSourceTerminal())
 		return false;
-
-	return c2t_hccs_sourceTerminalSetEdu($skill[portscan]);
+	return c2t_hccs_sourceTerminalSetEdu($skill[portscan],$skill[extract]);
 }
 boolean c2t_hccs_sourceTerminalSetEdu(skill ski) {
 	return c2t_hccs_sourceTerminalSetEdu(ski,$skill[none]);
@@ -900,19 +706,16 @@ boolean c2t_hccs_sourceTerminalSetEdu(skill ski) {
 boolean c2t_hccs_sourceTerminalSetEdu(skill ski1,skill ski2) {
 	if (!c2t_hccs_haveSourceTerminal())
 		return false;
-
 	string edu1 = `{ski1.to_lower_case()}.edu`;
 	string edu2 = `{ski2.to_lower_case()}.edu`;
-
 	if (!get_property("sourceTerminalEducateKnown").contains_text(edu1) && ski1 != $skill[none]) {
-		c2t_hccs_printWarn(`{edu1} is not known`);
+		print(`{edu1} is not known`,"red");
 		edu1 = "none.edu";
 	}
 	if (!get_property("sourceTerminalEducateKnown").contains_text(edu2) && ski2 != $skill[none]) {
-		c2t_hccs_printWarn(`{edu2} is not known`);
+		print(`{edu2} is not known`,"red");
 		edu2 = "none.edu";
 	}
-
 	string [3] lazy = {edu1,edu2,edu1};
 	foreach i,x in lazy switch (x) {
 		default:
@@ -923,7 +726,6 @@ boolean c2t_hccs_sourceTerminalSetEdu(skill ski1,skill ski2) {
 	}
 	return true;
 }
-
 
 //i--sweet synthesis
 boolean c2t_hccs_sweetSynthesis() return have_skill($skill[sweet synthesis]);
@@ -951,7 +753,7 @@ boolean c2t_hccs_sweetSynthesis(effect eff) {
 		case $effect[synthesis: learning]://mys exp
 			if (sweet_synthesis(eff))
 				return true;
-			c2t_hccs_printInfo(`Note: {eff} failed. Going to fight a hobelf and try again.`);
+			print(`Note: {eff} failed. Going to fight a hobelf and try again.`);
 			if (!have_equipped($item[fourth of may cosplay saber]))
 				equip($item[fourth of may cosplay saber]);
 			if (!c2t_hccs_combatLoversLocket($monster[elf hobo]))
@@ -993,7 +795,7 @@ boolean c2t_hccs_sweetSynthesis(effect eff) {
 					break;
 			}
 			//have to waste a wish & saber use on olives as moxie, so can't recover candy failure with those like other classes
-			c2t_hccs_printInfo("Didn't get the right candies for buffs, so dropping hardcore.");
+			print("Didn't get the right candies for buffs, so dropping hardcore.","blue");
 			if (in_hardcore())
 				c2t_dropHardcore();
 			//TODO maybe make pull selection smarter
@@ -1096,6 +898,7 @@ boolean c2t_hccs_tomeClipArt(item it) {
 		return false;
 	if (get_property("tomeSummons").to_int() >= 3)
 		return false;
+	set_property("_psccs_clipArts_used",get_property("_psccs_clipArts_used")+ `,Summoned {it}`);
 	return retrieve_item(it);
 }
 
@@ -1227,7 +1030,7 @@ void c2t_hccs_vote() {
 			break;
 	}
 
-	c2t_hccs_printInfo("Voting for "+(radi==1?mon1:mon2)+", "+get_property('_voteLocal'+(che1+1))+", "+get_property('_voteLocal'+(che2+1)));
+	print("Voting for "+(radi==1?mon1:mon2)+", "+get_property('_voteLocal'+(che1+1))+", "+get_property('_voteLocal'+(che2+1)),"blue");
 	buf = visit_url('choice.php?pwd&option=1&whichchoice=1331&g='+radi+'&local[]='+che1+'&local[]='+che2,true,false);
 
 	if (available_amount($item[&quot;i voted!&quot; sticker]) == 0)

@@ -1,13 +1,9 @@
 //c2t hccs choices
 //c2t
 
-import <c2t_hccs_lib.ash>
 
 void main (int id,string page) {
 	int testsDone = get_property("csServicesPerformed").split_string(",").count();
-	location loc;
-	string str = "";
-	int num = 0;
 
 	switch (id) {
 		default:
@@ -18,10 +14,13 @@ void main (int id,string page) {
 		// 2: decline quest
 		// 6: leave
 		case 1322:
+			print("Handling NEP quest", "red");
 			switch (get_property("_questPartyFairQuest")) {
+				print(get_property("_questPartyFairQuest"));
 				case "food":
 				case "booze":
 					run_choice(1);
+					print("Accepting NEP quest", "red");
 					break;
 				case "dj":
 				case "trash":
@@ -29,6 +28,7 @@ void main (int id,string page) {
 				case "woots":
 				default:
 					run_choice(2);
+					print("Rejecting NEP quest", "red");
 					break;
 			}
 			break;
@@ -40,7 +40,6 @@ void main (int id,string page) {
 		//4: Investigate the basement
 		//5: Pick a fight
 		case 1324:
-			set_property("_c2t_hccs_ncForceActive",false);
 			//going for stat exp buff initially, then combats afterward
 			if (my_primestat() == $stat[muscle] && have_effect($effect[spiced up]) == 0) {
 				run_choice(2);
@@ -85,6 +84,14 @@ void main (int id,string page) {
 				run_choice(2);
 			else
 				run_choice(1);
+			break;
+		/*
+		Mother slime
+		1: fight mother slime
+		2: skip at no adv cost
+		 */
+		case 326:
+			run_choice(1);
 			break;
 
 		//===================
@@ -215,103 +222,57 @@ void main (int id,string page) {
 			else
 				run_choice(1);//mom's necklace
 			break;
-
-		//autumn-aton
-		case 1483:
-			//upgrade
-			if (available_choice_options() contains 1) {
-				print(`Autumn-aton: {available_choice_options()[1]}`);
-				run_choice(1);
-			}
-
-			//find where to go based on upgrade priority
-			str = get_property("autumnatonUpgrades");
-			if (!get_property("c2t_hccs_disable.autumnatonItem").to_boolean()
-				&& !str.contains_text("base_blackhat"))//item potion
-			{
-				loc = $location[the sleazy back alley];
-			}
-			else if (!str.contains_text("rightleg1"))//-11 turns
-				loc = $location[the neverending party];
-			else if (!str.contains_text("leftleg1"))//-11 turns
-				loc = $location[noob cave];
-			else if (!str.contains_text("leftarm1"))//+1 item from zone
-				loc = $location[the haunted pantry];
-			else//no easy/good upgrade areas open
-				loc = $location[thugnderdome];
-
-			foreach i,x in get_autumnaton_locations() if (x == loc) {
-				num = x.id;
-				break;
-			}
-			if (num == 0) {
-				print("Autumn-aton: couldn't go where it wanted");
-				run_choice(3);
-			}
-			else if (!run_choice(2,`heythereprogrammer={num}`).contains_text("Good luck, little buddy!")) {
-				run_choice(3);
-				c2t_hccs_printWarn("Autumn-aton: failed to go to a place that was available");
-			}
-			break;
-
 		//SIT
 		case 1494:
-			run_choice(2);
+			run_choice(2);//insectology
 			break;
-
-		//calling rufus
-		//1:entity
-		//2:artifact
-		//3:items
-		//6:leave
-		case 1497:
-			if (get_property("_shadowAffinityToday").to_boolean()) {
-				c2t_hccs_printWarn("Tried to start another Rufus quest");
-				run_choice(6);
-			}
-			else if (get_property("rufusDesiredEntity").contains_text("shadow orrery")) {
-				if (have_skill($skill[northern explosion]))
-					run_choice(1);
-				else
-					run_choice(2);
-			}
-			else
-				run_choice(1);
-			break;
-
-		//calling rufus back
-		case 1498:
-			if (available_choice_options() contains 1)
-				run_choice(1);
-			else {
-				run_choice(6);
-				c2t_hccs_printWarn("Tried to turn in Rufus quest, but it wasn't done?");
-			}
-			break;
-
 		//labyrinth of shadows
+		/*
+		Calling Rufus
+		1: boss quest (free)
+		2: artifact quest
+		3: item quest
+		4: hang up
+		*/
+		case 1497:
+			run_choice(1);
+			break;
+		case 1498:
+			run_choice(1);//finish quest
+			break;
 		case 1499:
-			str = get_property("rufusQuestTarget");
-			if (str == "" || get_property("questRufus") == "step1")
-				str = "Shadow's Chill";
-			if (get_property("questRufus") == "step1")
-				c2t_hccs_printWarn("The last Rufus quest can be turned in already, so can't find another artifact");
-
-			for tries from 1 to 11 {
-				for i from 2 to 4 if (available_choice_options(true)[i].contains_text(str))
-					run_choice(i);
-				if (!handling_choice())
+			string str;
+			switch (get_property("rufusQuestTarget")) {
+				default:
+				case "shadow heptahedron":
+					str = "Mysticality";
 					break;
+				case "shadow snowflake":
+					str = "Shadow's Chill";
+					break;
+				case "shadow heart":
+					str = "Shadow's Heart";
+					break;
+				case "shadow wave":
+					str = "Shadow's Thickness";
+					break;
+				case "shadow lighter":
+					str = "Muscle";
+					break;
+				case "shadow bucket":
+					str = "Moxie";
+					break;
+			}
+			for tries from 1 to 50 {
+				string[int] choices = available_choice_options(true);
+				print("Attempt " + tries + " with " + choices[2]);
+				for i from 2 to 4 if (choices[i].contains_text(str)) {
+					run_choice(i);
+					return;
+				}
 				run_choice(1);
 			}
-			break;
-
-		//like a loded stone
-		//1:forge
-		//2:shadow waters buff
-		//3:items
-		case 1500:
-			run_choice(2);
+			abort("labyrinth of shadows broke or just super unlucky?");
 			break;
 	}
 }
