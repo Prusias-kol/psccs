@@ -10,7 +10,7 @@ This is a continual work-in-progress. It is not likely to run out-of-the-box for
 
 To install, run the following on the gCLI:
 
-`git checkout https://github.com/Eric-Chng/psccs.git master`
+`git checkout https://github.com/Prusias-kol/c2t_hccs master`
 
 ## PSCCS Loadout
 * I run as a PM with Wallaby, astral 6-pack, and astral chapeau in SC CS.
@@ -138,7 +138,6 @@ While these are not strictly required, not having enough that either save turns 
 * [MayDay&trade; contract](https://kol.coldfront.net/thekolwiki/index.php/MayDay%E2%84%A2_contract) &mdash; can save up to 1.7 turns on item test on some classes
 
 ## Bugs?
-Report bugs here: https://github.com/Eric-Chng/psccs/issues
 
 ## TODO (eventually)
 
