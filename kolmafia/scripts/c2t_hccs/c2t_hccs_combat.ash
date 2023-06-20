@@ -90,7 +90,7 @@ void main(int initround, monster foe, string page) {
 		if (foe == $monster[fluffy bunny] || foe == $monster[goblin flapper]) {
 			m += c2t_bb($skill[become a cloud of mist]);
 			m += c2t_bb($skill[fire extinguisher: foam yourself]);
-			m.c2t_bbSubmit();
+			m.c2t_bbSubmit(true);
 		} else if (my_location() == $location[Shadow Rift (The Right Side of the Tracks)]) { // leftover from before i put hot before weapon
 			m = mHead + mSteal.c2t_bb($skill[meteor shower]);
 			m.c2t_bbSubmit();
@@ -111,7 +111,7 @@ void main(int initround, monster foe, string page) {
 		if (get_property("csServicesPerformed").contains_text("Be a Living Statue") && !get_property("csServicesPerformed").contains_text("Reduce Gazelle Population"))
 			m += c2t_bb($skill[%fn, spit on me!]);
 
-		m.c2t_bbSubmit();
+		m.c2t_bbSubmit(true);
 		return;
 	}
 	else {
@@ -124,15 +124,14 @@ void main(int initround, monster foe, string page) {
 					m = mHead + mSteal;
 					m += c2t_bb($skill[become a cloud of mist]);
 					m += c2t_bb($skill[fire extinguisher: foam yourself]);
-					m.c2t_bbSubmit();
+					m.c2t_bbSubmit(true);
 					return;
 				}
 				//fishing for latte ingredients with backups
 				else if (have_equipped($item[backup camera]) && c2t_hccs_backupCameraLeft() > 0) {
-					c2t_bbSubmit(
-						c2t_bb($skill[back-up to your last enemy])
-						.c2t_bb("twiddle;")
-					);
+					c2t_bb($skill[back-up to your last enemy])
+					.c2t_bb("twiddle;")
+					.c2t_bbSubmit(true);
 					return;
 				}
 				c2t_bbSubmit(
@@ -177,10 +176,9 @@ void main(int initround, monster foe, string page) {
 			case $monster[ungulith]:
 			case $monster[factory worker (female)]:
 			case $monster[factory worker (male)]://just in case this shows up
-				c2t_bbSubmit(
-					mSteal
-					.c2t_bb($skill[meteor shower])
-				);
+				mSteal
+				.c2t_bb($skill[meteor shower])
+				.c2t_bbSubmit(true);
 				return;
 			case $monster[evil olive]:
 				//have to burn a free kill and nostalgia/envy if no god lobster
@@ -223,7 +221,7 @@ void main(int initround, monster foe, string page) {
 				}
 				if (have_equipped($item[backup camera]) && c2t_hccs_backupCameraLeft() > 0) {
 					m += c2t_bb($skill[back-up to your last enemy]).c2t_bb("twiddle;");
-					m.c2t_bbSubmit();
+					m.c2t_bbSubmit(true);
 					return;
 				}
 				//feel pride still thinks it can be used after max uses for some reason
