@@ -30,6 +30,7 @@ To install, run the following on the gCLI:
 ## PSCCS Specific Requirements
 * Only works as Pastamancer with CS relevant perms (Thralls mandatory)
 * Outfit named `CS_PM_stickknife_glitch` that has stickknife in mainhand
+* If you have the simmering staff, outfit named `CS_PM_simmering_glitch` with cheffstaff in mainhand and stickknife in offhand
 * If you have kitchen royalty staff, outfit named `CS_PM_kitchenroyalty_glitch` with cheffstaff in mainhand and stickknife in offhand
 * If you have the roaring hearth, outfit named `CS_PM_roaringhearth_glitch` with the staff in mainhand and stickknife in offhand
 * If you have machine elf, modify `acquireInnerElf()` to support your clan with slime tube primed or ask Prusias for a whitelist to his clan (Restaurant Chill).
