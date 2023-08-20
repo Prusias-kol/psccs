@@ -685,7 +685,7 @@ boolean c2t_hccs_preCoil() {
 		if (c2t_hccs_pizzaCube())
 			autosell(5,$item[porquoise]);
 	}
-	if (my_meat() < 1000)
+	if (my_meat() < 1500)
 		autosell(1,$item[porquoise]);
 
 	//buy toy accordion
@@ -1439,6 +1439,8 @@ boolean c2t_hccs_preFamiliar() {
 			}
 		}
 	}
+	if (item_amount($item[lump of loyal latite]) > 0)
+		c2t_hccs_getEffect($effect[Loyal as a Rock]);
 
 	// Pool buff
 	c2t_hccs_getEffect($effect[billiards belligerence]);
@@ -1878,14 +1880,17 @@ boolean c2t_hccs_preSpell() {
 		if (my_basestat($stat[mysticality]) >= 250) {
 			c2t_hccs_pull($item[Staff of the Roaring Hearth]);
 		} 
-		if (my_basestat($stat[mysticality]) >= 200 && available_amount($item[Staff of the Roaring Hearth]) == 0) {
+		if (my_basestat($stat[mysticality]) >= 125 && available_amount($item[Staff of the Roaring Hearth]) == 0) {
+			c2t_hccs_pull($item[Staff of Simmering Hatred]);
+		}
+		if (my_basestat($stat[mysticality]) >= 200 && available_amount($item[Staff of the Roaring Hearth]) == 0 && available_amount($item[Staff of Simmering Hatred]) == 0) {
 			c2t_hccs_pull($item[Staff of Kitchen Royalty]);
 		}
 	} 
 
 	//get up to 2 obsidian nutcracker
 	int nuts = 2;
-	foreach x in $items[stick-knife of loathing,Staff of Kitchen Royalty, Staff of the Roaring Hearth]//,Abracandalabra]
+	foreach x in $items[stick-knife of loathing,Staff of Kitchen Royalty, Staff of the Roaring Hearth, staff of simmering hatred]//,Abracandalabra]
 		if (available_amount(x) > 0)
 			nuts--;
 	if (!have_familiar($familiar[left-hand man]) && available_amount($item[abracandalabra]) > 0)
@@ -1941,6 +1946,8 @@ boolean c2t_hccs_preSpell() {
 			cli_execute("outfit CS_PM_roaringhearth_glitch");
 		} else if(available_amount($item[Staff of Kitchen Royalty])>0) {
 			cli_execute("outfit CS_PM_kitchenroyalty_glitch");
+		} else if (available_amount($item[Staff of Simmering Hatred]) > 0) {
+			cli_execute("outfit CS_PM_simmering_glitch");
 		}
 	}
 
@@ -2628,6 +2635,8 @@ void c2t_hccs_fights() {
 			if (available_amount($item[tiny stillsuit]) > 0)
 				fam = ",equip tiny stillsuit";
 			use_familiar(c2t_priority($familiars[galloping grill,hovering sombrero]));
+		} else {
+			c2t_hccs_levelingFamiliar(false);
 		}
 
 		//inital and post-latte backup fights
@@ -2840,7 +2849,7 @@ familiar c2t_hccs_levelingFamiliar(boolean safeOnly) {
 				use_familiar($familiar[pocket professor]);
 		}
 		else
-			out = c2t_priority($familiars[galloping grill,hovering sombrero]);
+			out = c2t_priority($familiars[Artistic Goth Kid,galloping grill,hovering sombrero]);
 	}
 	else
 		out = $familiar[hovering sombrero];
