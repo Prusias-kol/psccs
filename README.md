@@ -38,7 +38,8 @@ To install, run the following on the gCLI:
 * Must have `ungulith` and `Witchess Witch` in combat lover locket
 * a source of free crafts. One of the skills that give 5 is enough.
 * Likely requires oliver's place + machine elf to hit leveling targets. 
-* Whitelisted to Redemption City. All hardcoded clan swaps (for machine elf and clan consults) are commented. Cmd f to replace
+* Go to c2t_hccs settings and set the new settings for Home Clan (likely same as VIP clan unless you are using a VIP clan for consults). This is whatever clan you want to end the run with.
+* Go to c2t_hccs settings and set the new settings for Slime Clan. Clan must be at mother slime for MELF
 * Leveling has been made extremely tight. Likely requires NEP, closed-circuit pay phone, machine elf, source terminal (less so), oliver's place.
 * If you own comma chameleon, make sure you config homemade robot familiar to have + 100 fam weight
 
