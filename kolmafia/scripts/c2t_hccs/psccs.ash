@@ -175,7 +175,7 @@ void c2t_hccs_breakfast() {
 boolean acquireInnerElf() {
 	//inner elf shenanigans
 	if(have_familiar($familiar[machine elf]) && have_effect($effect[Inner Elf]) == 0) {
-		c2t_hccs_joinClan("Restaurant Chill");
+		c2t_hccs_joinClan(get_property("c2t_hccs_prusias_slimeClan"));
 		use_familiar($familiar[machine elf]);
 		//items
 		item slotacc1 = equipped_item($slot[acc1]);
@@ -191,7 +191,7 @@ boolean acquireInnerElf() {
 		equip($slot[acc2], slotacc2);
 		equip($slot[acc3], slotacc3);
 		//rejoin Redemption City
-		c2t_hccs_joinClan("2047004929");
+		c2t_hccs_joinClan(get_property("c2t_hccs_prusias_homeClan"));
 	}
 	if (have_effect($effect[Inner Elf]) > 0)
 		return true;
@@ -599,7 +599,7 @@ boolean c2t_hccs_preCoil() {
 			print(`{fortunes} is not online; skipping fortunes`,"red");
 	}
 	//rejoin Redemption City
-	cli_execute("/whitelist Redemption City");
+	c2t_hccs_joinClan(get_property("c2t_hccs_prusias_homeClan"));
 
 	//fax
 	// Disabled because fax = 1 KGE while combat lover, only 1 fight = KGE
