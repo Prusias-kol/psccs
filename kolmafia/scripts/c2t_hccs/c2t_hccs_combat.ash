@@ -317,6 +317,31 @@ void main(int initround, monster foe, string page) {
 				m += mBasicBot;
 				m.c2t_bbSubmit();
 				return;
+			//Artistic Goth Kid
+			case $monster[black crayon beast]:
+			case $monster[black crayon beetle]:
+			case $monster[black crayon constellation]:
+			case $monster[black crayon golem]:
+			case $monster[black crayon demon]:
+			case $monster[black crayon man]:
+			case $monster[black crayon elemental]:
+			case $monster[black crayon crimbo elf]:
+			case $monster[black crayon fish]:
+			case $monster[black crayon goblin]:
+			case $monster[black crayon hippy]:
+			case $monster[black crayon hobo]:
+			case $monster[black crayon shambling monstrosity]:
+			case $monster[black crayon manloid]:
+			case $monster[black crayon mer-kin]:
+			case $monster[black crayon frat orc]:
+			case $monster[black crayon penguin]:
+			case $monster[black crayon pirate]:
+			case $monster[black crayon flower]:
+			case $monster[black crayon slime]:
+			case $monster[black crayon undead thing]:
+			case $monster[black crayon spiraling shape]:
+				c2t_bbSubmit(mHead + mBasic.c2t_bb($skill[saucegeyser]));
+				return;
 			//chain potential; basic otherwise
 			case $monster[sausage goblin]:
 				c2t_bbSubmit(mHead + mChain);
