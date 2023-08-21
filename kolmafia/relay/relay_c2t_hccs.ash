@@ -25,7 +25,9 @@ void main() {
 
 	string [string] clan = {
 		"c2t_hccs_joinClan":"clan to use for all VIP things; clan ID is preferred, but just the name also works",
-		"c2t_hccs_clanFortunes":"name of the person/bot that you want to do the fortune teller with; blank out to skip fortunes"
+		"c2t_hccs_clanFortunes":"name of the person/bot that you want to do the fortune teller with; blank out to skip fortunes",
+		"c2t_hccs_prusias_homeClan":"clan to rejoin after VIP. In theory identical to VIP, but useful if you consult in BAFH for cheesefax; clan ID is preferred, but just the name also works",
+		"c2t_hccs_prusias_slimeClan":"clan to use MELF slime buff; clan ID is preferred, but just the name also works"
 		};
 
 	string [string] disableable = {
