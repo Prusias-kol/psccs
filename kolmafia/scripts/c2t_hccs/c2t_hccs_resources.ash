@@ -389,14 +389,21 @@ boolean c2t_hccs_combatLoversLocket(monster mon) {//mostly same as c2t_hccs_geni
 boolean c2t_hccs_genie(effect eff) {
 	if (have_effect(eff) > 0)
 		return true;
-	if (get_property("_genieWishesUsed").to_int() >= 3 && available_amount($item[pocket wish]) == 0)
+	if (get_property("_genieWishesUsed").to_int() >= 3 && available_amount($item[pocket wish]) == 0 && get_property("_monkeyPawWishesUsed").to_int() >= 5) {
 		return false;
+	}
 
-	cli_execute(`genie effect {eff}`);
+	if (get_property("_genieWishesUsed").to_int() < 3)
+		cli_execute(`genie effect {eff}`);
+	else if (get_property("_monkeyPawWishesUsed").to_int() < 5)
+		cli_execute(`monkeypaw effect {eff}`);
 	
-	set_property("_psccs_wishes_used",get_property("_psccs_wishes_used")+ `,Wished for {eff}`);
-
-	return have_effect(eff) > 0;
+	if (have_effect(eff) > 0) {
+		set_property("_psccs_wishes_used",get_property("_psccs_wishes_used")+ `,Wished for {eff}`);
+		return true;
+	} else {
+		return false;
+	}
 }
 boolean c2t_hccs_genie(monster mon) {
 	c2t_hccs_preAdv();
