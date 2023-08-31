@@ -393,9 +393,9 @@ boolean c2t_hccs_genie(effect eff) {
 		return false;
 	}
 
-	if (get_property("_genieWishesUsed").to_int() < 3)
+	if (get_property("_genieWishesUsed").to_int() < 3 && item_amount($item[genie bottle]) > 0)
 		cli_execute(`genie effect {eff}`);
-	else if (get_property("_monkeyPawWishesUsed").to_int() < 5)
+	else if (get_property("_monkeyPawWishesUsed").to_int() < 5 && item_amount($item[11186]) > 0)
 		cli_execute(`monkeypaw effect {eff}`);
 	
 	if (have_effect(eff) > 0) {
