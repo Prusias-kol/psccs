@@ -535,6 +535,13 @@ void c2t_hccs_exit() {
 }
 
 boolean c2t_hccs_preCoil() {
+	if (!get_property("_prusias_psccs_charterZonesUnlocked").to_boolean()) {
+		if (get_property("stenchAirportAlways").to_boolean()) {
+			adv1($location[The Toxic Teacups],-1);
+		}
+		set_property("_prusias_psccs_charterZonesUnlocked", "true");
+	}
+
 	//numberology first thing to get adventures
 	c2t_hccs_useNumberology();
 
@@ -772,16 +779,16 @@ boolean c2t_hccs_preCoil() {
 	if (!get_property('_borrowedTimeUsed').to_boolean() && c2t_hccs_tomeClipArt($item[borrowed time]))
 		use(1,$item[borrowed time]);
 
-	// // second tome use // box of familiar jacks
-	// // going to get camel equipment straight away
-	// if (c2t_hccs_melodramedary()
-	// 	&& available_amount($item[dromedary drinking helmet]) == 0
-	// 	&& c2t_hccs_tomeClipArt($item[box of familiar jacks])) {
+	// second tome use // box of familiar jacks
+	// going to get camel equipment straight away
+	if (c2t_hccs_melodramedary()
+		&& available_amount($item[dromedary drinking helmet]) == 0
+		&& c2t_hccs_tomeClipArt($item[box of familiar jacks])
+		&& (have_familiar($familiar[Artistic Goth Kid]) || have_familiar($familiar[Mini-Hipster]))) {
 
-	// 	use_familiar($familiar[melodramedary]);
-	// 	use(1,$item[box of familiar jacks]);
-	// }
-	if (available_amount($item[cold-filtered water]) == 0 && have_effect($effect[Purity of Spirit]) == 0
+		use_familiar($familiar[melodramedary]);
+		use(1,$item[box of familiar jacks]);
+	} else if (available_amount($item[cold-filtered water]) == 0 && have_effect($effect[Purity of Spirit]) == 0
 	&& c2t_hccs_tomeClipArt($item[cold-filtered water])) {
 		use(1,$item[cold-filtered water]);
 	}
@@ -820,10 +827,10 @@ boolean c2t_hccs_buffExp() {
 			c2t_hccs_genie($effect[hgh-charged]);
 
 		// mus exp synthesis
-		if (!c2t_hccs_sweetSynthesis($effect[synthesis: movement]))
+		if (!get_property("c2t_hccs_prusias_disable.levelingSynthesis").to_boolean() && !c2t_hccs_sweetSynthesis($effect[synthesis: movement]))
 			print('Failed to synthesize exp buff','red');
 
-		if (numeric_modifier('muscle experience percent') < 89.999) {
+		if (numeric_modifier('muscle experience percent') < 49.999) {
 			abort('Insufficient +exp%');
 			return false;
 		}
@@ -835,8 +842,8 @@ boolean c2t_hccs_buffExp() {
 				c2t_hccs_genie($effect[different way of seeing things]);
 
 		// mys exp synthesis
-		// if (!c2t_hccs_sweetSynthesis($effect[synthesis: learning]))
-		// 	print('Failed to synthesize exp buff','red');
+		if (!get_property("c2t_hccs_prusias_disable.levelingSynthesis").to_boolean() && !c2t_hccs_sweetSynthesis($effect[synthesis: learning]))
+			print('Failed to synthesize exp buff','red');
 
 		//face
 		c2t_hccs_getEffect($effect[inscrutable gaze]);
@@ -1030,8 +1037,8 @@ boolean c2t_hccs_allTheBuffs() {
 	//third tome use //no longer using bee's knees for stat boost on non-moxie, but still need same strength buff?
 	if (my_mp() < 11)
 		cli_execute('rest free');
-	if (my_primestat() != $stat[mysticality] && have_effect($effect[purity of spirit]) == 0 && c2t_hccs_tomeClipArt($item[cold-filtered water]))
-		use(1,$item[cold-filtered water]);
+	// if (my_primestat() != $stat[mysticality] && have_effect($effect[purity of spirit]) == 0 && c2t_hccs_tomeClipArt($item[cold-filtered water]))
+	// 	use(1,$item[cold-filtered water]);
 
 	//rhinestones to help moxie leveling
 	if (my_primestat() == $stat[moxie])
@@ -2286,8 +2293,8 @@ void c2t_hccs_fights() {
 
 		if (get_property('_latteDrinkUsed').to_boolean())
 			cli_execute('latte refill cinnamon pumpkin vanilla');
-		if (have_familiar($familiar[ghost of crimbo carols]))
-			use_familiar($familiar[ghost of crimbo carols]);
+		// if (have_familiar($familiar[ghost of crimbo carols]))
+		// 	use_familiar($familiar[ghost of crimbo carols]);
 		maximize("mainstat,equip latte,-equip i voted,6 bonus designer sweatpants",false);
 
 		//going to grab runproof mascara from globster if moxie instead of having to wait post-kramco
@@ -2374,14 +2381,18 @@ void c2t_hccs_fights() {
 			maximize("mainstat,exp,-equip kramco sausage-o-matic&trade;,-equip i voted,equip June Cleaver,6 bonus designer sweatpants"+garbage+fam,false);
 		adv1(shadowLevelingLoc,-1,"");
 	}
-	//Shadow Boss. Deprecated since it takes a turn (shadow affinity runs out by 12th combat)
+	//Shadow Boss. 
 	if (get_property("_psccs_shadowRiftBossAttempted") == "" && get_property("rufusQuestType") == "entity") {
 		if (my_mp() < 50)
 			cli_execute('eat magical sausage');
 		while (my_maxhp() - my_hp() > 50) {
 			cli_execute("cast cannelloni cocoon");
 		}
-		c2t_hccs_levelingFamiliar(false);
+		if (have_familiar($familiar[Machine Elf])) {
+			use_familiar($familiar[Machine Elf]);
+		} else {
+			c2t_hccs_levelingFamiliar(false);
+		}
 		//Never want fourth of may over cleaver in case it fails. Might need cleaver elemental dmg
 		maximize("mainstat,exp,equip June Cleaver,6 bonus designer sweatpants"+garbage+fam,false);
 		if (get_property("rufusQuestTarget") == "shadow scythe") //scythe always wins init, block 90%
@@ -2818,7 +2829,11 @@ boolean c2t_hccs_wandererFight() {
 		append += ",equip tiny stillsuit";
 	set_location($location[the neverending party]);
 	maximize("mainstat,exp,6 bonus designer sweatpants"+append,false);
-	adv1($location[the neverending party],-1,"");
+	if (get_property("stenchAirportAlways").to_boolean()) {
+		adv1($location[The Toxic Teacups],-1);
+	} else {
+		adv1($location[the neverending party],-1,"");
+	}
 
 	//hopefully restore to previous state without outfits
 	use_familiar(nowFam);
@@ -2849,7 +2864,7 @@ familiar c2t_hccs_levelingFamiliar(boolean safeOnly) {
 				use_familiar($familiar[pocket professor]);
 		}
 		else
-			out = c2t_priority($familiars[Artistic Goth Kid,galloping grill,hovering sombrero]);
+			out = c2t_priority($familiars[Mini-Hipster, Artistic Goth Kid,galloping grill,hovering sombrero]);
 	}
 	else
 		out = $familiar[hovering sombrero];
