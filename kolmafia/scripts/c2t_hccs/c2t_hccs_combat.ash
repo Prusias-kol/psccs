@@ -340,6 +340,12 @@ void main(int initround, monster foe, string page) {
 			case $monster[black crayon slime]:
 			case $monster[black crayon undead thing]:
 			case $monster[black crayon spiraling shape]:
+			//Mini-Hipster
+			case $monster[angry bassist]:
+			case $monster[blue-haired girl]:
+			case $monster[evil ex-girlfriend]:
+			case $monster[peeved roommate]:
+			case $monster[random scenester]:
 				c2t_bbSubmit(mHead + mBasic.c2t_bb($skill[saucegeyser]));
 				return;
 			//chain potential; basic otherwise
