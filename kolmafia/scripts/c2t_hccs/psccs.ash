@@ -182,14 +182,18 @@ boolean acquireInnerElf() {
 		item slotacc2 = equipped_item($slot[acc2]);
 		item slotacc3 = equipped_item($slot[acc3]);
 		item shirt = equipped_item($slot[shirt]);
-		if (item_amount($item[Eight Days a Week Pill Keeper]) > 0);
+		if (item_amount($item[Eight Days a Week Pill Keeper]) > 0); {
 			equip($slot[acc1], $item[Eight Days a Week Pill Keeper]);
-		if (item_amount($item[10166]) > 0)
+		}
+		if (item_amount($item[10166]) > 0) {
 			equip($slot[acc2], $item[10166]); //lil doc bag
-		if (item_amount($item[Kremlin's Greatest Briefcase]) > 0)
+		}
+		if (item_amount($item[Kremlin's Greatest Briefcase]) > 0) {
 			equip($slot[acc3], $item[Kremlin's Greatest Briefcase]);
-		if (item_amount($item[Jurassic Parka]) > 0)
+		}
+		if (item_amount($item[Jurassic Parka]) > 0) {
 			equip($slot[shirt], $item[Jurassic Parka]);
+		}
 		//get inner elf
 		adv1($location[The Slime Tube],-1,"");
 		//reequip items
