@@ -1740,7 +1740,9 @@ boolean c2t_hccs_preWeapon() {
 				use_familiar($familiar[ghost of crimbo carols]);
 				adv1($location[the dire warren],-1,"");
 			}
-			use_familiar($familiar[melodramedary]);
+			if (c2t_hccs_melodramedary()) {
+				use_familiar($familiar[melodramedary]);
+			} 
 		}
 
 
