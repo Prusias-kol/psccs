@@ -182,7 +182,7 @@ boolean acquireInnerElf() {
 		item slotacc2 = equipped_item($slot[acc2]);
 		item slotacc3 = equipped_item($slot[acc3]);
 		item shirt = equipped_item($slot[shirt]);
-		if (item_amount($item[Eight Days a Week Pill Keeper]) > 0); {
+		if (item_amount($item[Eight Days a Week Pill Keeper]) > 0) {
 			equip($slot[acc1], $item[Eight Days a Week Pill Keeper]);
 		}
 		if (item_amount($item[10166]) > 0) {
