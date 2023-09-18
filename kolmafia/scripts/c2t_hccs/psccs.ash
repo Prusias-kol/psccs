@@ -546,15 +546,18 @@ void c2t_hccs_exit() {
 }
 
 boolean c2t_hccs_preCoil() {
+	
+
+	//numberology first thing to get adventures
+	c2t_hccs_useNumberology();
+
+	//activate zones
 	if (!get_property("_prusias_psccs_charterZonesUnlocked").to_boolean()) {
 		if (get_property("stenchAirportAlways").to_boolean()) {
 			adv1($location[The Toxic Teacups],-1);
 		}
 		set_property("_prusias_psccs_charterZonesUnlocked", "true");
 	}
-
-	//numberology first thing to get adventures
-	c2t_hccs_useNumberology();
 
 	//install workshed
 	item workshed = get_property("c2t_hccs_workshed").to_item();
@@ -638,10 +641,10 @@ boolean c2t_hccs_preCoil() {
 
 	c2t_hccs_haveUse($skill[spirit of peppermint]);
 
-	// //fish hatchet
-	// if (c2t_hccs_vipFloundry())
-	// 	if (!get_property('_floundryItemCreated').to_boolean() && !retrieve_item(1,$item[fish hatchet]))
-	// 		print('Failed to get a fish hatchet',"red");
+	//fish hatchet
+	if (c2t_hccs_vipFloundry())
+		if (!get_property('_floundryItemCreated').to_boolean() && !retrieve_item(1,$item[fish hatchet]))
+			print('Failed to get a fish hatchet',"red");
 
 	//cod piece steps
 	/*if (!retrieve_item(1,$item[fish hatchet])) {
@@ -1811,7 +1814,8 @@ boolean c2t_hccs_preWeapon() {
 		use_skill(1, $skill[bind undead elbow macaroni]);
 		//what if maximizer removes stick knife? probably won't!
 		cli_execute("outfit CS_PM_stickknife_glitch");
-		//equip( $slot[off-hand], $item[fish hatchet]);
+		if (item_amount($item[fish hatchet]) > 0)
+			equip( $slot[off-hand], $item[fish hatchet]);
 
 	}
 
