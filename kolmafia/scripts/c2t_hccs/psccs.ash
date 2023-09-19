@@ -1741,7 +1741,7 @@ boolean c2t_hccs_preWeapon() {
 				if (my_mp() < 30)
 					cli_execute('rest free');
 				use_familiar($familiar[ghost of crimbo carols]);
-				adv1($location[the dire warren],-1,"");
+				//adv1($location[the dire warren],-1,""); save fight for ungulith
 			}
 			if (c2t_hccs_melodramedary()) {
 				use_familiar($familiar[melodramedary]);
