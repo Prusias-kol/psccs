@@ -93,7 +93,7 @@ void main(int initround, monster foe, string page) {
 			m.c2t_bbSubmit(true);
 		} else if (my_location() == $location[Shadow Rift (The Right Side of the Tracks)]) { // leftover from before i put hot before weapon
 			m = mHead + mSteal.c2t_bb($skill[meteor shower]);
-			m.c2t_bbSubmit();
+			m.c2t_bbSubmit(true);
 		}
 		else {//NEP
 			m += c2t_bb($skill[gulp latte]);
