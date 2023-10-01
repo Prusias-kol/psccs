@@ -80,6 +80,7 @@ void c2t_hccs_printTestData();
 void c2t_hccs_testData(string testType,int testNum,int turnsTaken,int turnsExpected);
 familiar c2t_hccs_levelingFamiliar(boolean safeOnly);
 boolean acquireInnerElf();
+int webScrapeAdvCost(int whichtest);
 
 
 void main() {
@@ -390,35 +391,42 @@ void c2t_hccs_printTestData() {
 //precursor to facilitate using only as many resources as needed and not more
 int c2t_hccs_testTurns(int test) {
 	int num;
+	int ans;
 	switch (test) {
 		default:
 			abort('Something broke with checking turns on test '+test);
 		case TEST_HP:
-			return (60 - (my_maxhp() - my_buffedstat($stat[muscle]) + 3)/30);
+			ans = (60 - (my_maxhp() - my_buffedstat($stat[muscle]) + 3)/30);
 		case TEST_MUS:
-			return (60 - (my_buffedstat($stat[muscle]) - my_basestat($stat[muscle]))/30);
+			ans = (60 - (my_buffedstat($stat[muscle]) - my_basestat($stat[muscle]))/30);
 		case TEST_MYS:
-			return (60 - (my_buffedstat($stat[mysticality]) - my_basestat($stat[mysticality]))/30);
+			ans = (60 - (my_buffedstat($stat[mysticality]) - my_basestat($stat[mysticality]))/30);
 		case TEST_MOX:
-			return (60 - (my_buffedstat($stat[moxie]) - my_basestat($stat[moxie]))/30);
+			ans = (60 - (my_buffedstat($stat[moxie]) - my_basestat($stat[moxie]))/30);
 		case TEST_FAMILIAR:
-			return (60 - floor((numeric_modifier('familiar weight')+familiar_weight(my_familiar()))/5));
+			ans = (60 - floor((numeric_modifier('familiar weight')+familiar_weight(my_familiar()))/5));
 		case TEST_WEAPON:
 			num = (have_effect($effect[bow-legged swagger]) > 0?25:50);
-			return (60 - floor(numeric_modifier('weapon damage') / num + 0.001) - floor(numeric_modifier('weapon damage percent') / num + 0.001));
+			ans = (60 - floor(numeric_modifier('weapon damage') / num + 0.001) - floor(numeric_modifier('weapon damage percent') / num + 0.001));
 		case TEST_SPELL:
-			return (60 - floor(numeric_modifier('spell damage') / 50 + 0.001) - floor(numeric_modifier('spell damage percent') / 50 + 0.001));
+			ans = (60 - floor(numeric_modifier('spell damage') / 50 + 0.001) - floor(numeric_modifier('spell damage percent') / 50 + 0.001));
 		case TEST_NONCOMBAT:
 			num = -round(numeric_modifier('combat rate'));
-			return (60 - (num > 25?(num-25)*3+15:num/5*3));
+			ans = (60 - (num > 25?(num-25)*3+15:num/5*3));
 		case TEST_ITEM:
-			return (60 - floor(numeric_modifier('Booze Drop') / 15 + 0.001) - floor(numeric_modifier('Item Drop') / 30 + 0.001));
+			ans = (60 - floor(numeric_modifier('Booze Drop') / 15 + 0.001) - floor(numeric_modifier('Item Drop') / 30 + 0.001));
 		case TEST_HOT_RES:
-			return (60 - floor(numeric_modifier('hot resistance')));
+			ans = (60 - floor(numeric_modifier('hot resistance')));
 		case TEST_COIL_WIRE:
 			return 60;
 		case 30://final service in case that gets checked
 			return 0;
+	}
+	int scrapeCheck = webScrapeAdvCost(test);
+	if (ans > scrapeCheck) {
+		return scrapeCheck;
+	} else {
+		return ans;
 	}
 }
 
@@ -550,14 +558,6 @@ boolean c2t_hccs_preCoil() {
 
 	//numberology first thing to get adventures
 	c2t_hccs_useNumberology();
-
-	//activate zones
-	if (!get_property("_prusias_psccs_charterZonesUnlocked").to_boolean()) {
-		if (get_property("stenchAirportAlways").to_boolean()) {
-			adv1($location[The Toxic Teacups],-1);
-		}
-		set_property("_prusias_psccs_charterZonesUnlocked", "true");
-	}
 
 	//install workshed
 	item workshed = get_property("c2t_hccs_workshed").to_item();
@@ -2847,6 +2847,12 @@ boolean c2t_hccs_wandererFight() {
 	set_location($location[the neverending party]);
 	maximize("mainstat,exp,6 bonus designer sweatpants"+append,false);
 	if (get_property("stenchAirportAlways").to_boolean()) {
+		if (!get_property("_prusias_psccs_charterZonesUnlocked").to_boolean()) {
+			if (get_property("stenchAirportAlways").to_boolean()) {
+				adv1($location[The Toxic Teacups],-1);
+			}
+			set_property("_prusias_psccs_charterZonesUnlocked", "true");
+		}
 		adv1($location[The Toxic Teacups],-1);
 	} else {
 		adv1($location[the neverending party],-1,"");
