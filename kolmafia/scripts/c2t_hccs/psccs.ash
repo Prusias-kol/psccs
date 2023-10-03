@@ -423,7 +423,7 @@ int c2t_hccs_testTurns(int test) {
 			return 0;
 	}
 	int scrapeCheck = webScrapeAdvCost(test);
-	if (ans > scrapeCheck) {
+	if (ans > scrapeCheck && ans != 60) {
 		return scrapeCheck;
 	} else {
 		return ans;
@@ -460,7 +460,7 @@ boolean c2t_hccs_thresholdMet(int test) {
 	string [int] arr = split_string(get_property('c2t_hccs_thresholds'),",");
 
 	if (count(arr) == 10 && arr[test-1].to_int() > 0 && arr[test-1].to_int() <= 60)
-		return (webScrapeAdvCost(test) <= arr[test-1].to_int());
+		return (c2t_hccs_testTurns(test) <= arr[test-1].to_int());
 	else {
 		print("Warning: the c2t_hccs_thresholds property is broken for this test; defaulting to a 1-turn threshold.","red");
 		return (c2t_hccs_testTurns(test) <= 1);
