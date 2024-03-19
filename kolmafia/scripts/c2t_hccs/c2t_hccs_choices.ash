@@ -274,5 +274,15 @@ void main (int id,string page) {
 			}
 			abort("labyrinth of shadows broke or just super unlucky?");
 			break;
+		//halloweiner dog
+		case 1106:
+			run_choice(3);
+			break;
+		case 1107:
+			run_choice(1);
+			break;
+		case 1108:
+			run_choice(1);
+			break;
 	}
 }
