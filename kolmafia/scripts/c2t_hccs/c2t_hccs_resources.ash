@@ -1007,7 +1007,7 @@ void c2t_hccs_vote() {
 			abort("Unrecognized class for voting?");
 		case $class[seal clubber]:
 			//3 spooky res,10 stench damage,2 fam exp,-2 adventures
-			che1 = 1;//10 stench damage
+			che1 = 2;//2 familiar exp
 			che2 = 2;//2 familiar exp
 			break;
 		case $class[turtle tamer]:
