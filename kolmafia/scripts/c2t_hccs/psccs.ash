@@ -986,7 +986,9 @@ boolean c2t_hccs_allTheBuffs() {
 		c2t_hccs_getEffect($effect[favored by lyle]);
 
 		//stat pillkeeper deprecated to save spleen
-	//c2t_hccs_pillkeeper($effect[hulkien]); //stats
+	if (my_class() == $class[seal clubber]) {
+		c2t_hccs_pillkeeper($effect[hulkien]); //stats
+	}
 	//c2t_hccs_pillkeeper($effect[fidoxene]);//familiar
 	//Fidoxene not profitable
 
@@ -1591,6 +1593,9 @@ boolean c2t_hccs_preNoncombat() {
 	c2t_hccs_getEffect($effect[throwing some shade]);
 	c2t_hccs_getEffect($effect[a rose by any other material]);
 
+	//june cleaver
+	c2t_hccs_getEffect($effect[Feeling Sneaky]);
+
 
 	use_familiar($familiar[disgeist]);
 
@@ -2127,6 +2132,16 @@ boolean c2t_hccs_preMys() {
 	maximize('mys,switch left-hand man',false);
 	if (c2t_hccs_thresholdMet(TEST_MYS))
 		return true;
+
+	//1,1,1,1,familiar,1,20,1,1,1
+	int testBeforeSpell = 0;
+	for testI from 0 to 5 {
+		testBeforeSpell += get_property("c2t_hccs_thresholds").split_string(",")[testI].to_int();
+	}
+	if (testBeforeSpell < 49) {
+		if (available_amount($item[beach comb]) > 0)
+			c2t_hccs_getEffect($effect[we're all made of starfish]);
+	}
 
 	//TODO AT songs
 	foreach x in $effects[
