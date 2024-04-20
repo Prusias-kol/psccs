@@ -1257,6 +1257,10 @@ boolean c2t_hccs_preItem() {
 	//unbreakable umbrella
 	c2t_hccs_unbreakableUmbrella("item");
 
+	if (have_effect($effect[Apriling Band Celebration Bop]) == 0) {
+		cli_execute("aprilband effect drop");
+	}
+
 	if (have_effect($effect[Crunching Leaves]) == 0 && available_amount($item[autumn leaf]) > 0) {
 		c2t_hccs_getEffect($effect[Crunching Leaves]);
 	}
@@ -1282,9 +1286,7 @@ boolean c2t_hccs_preItem() {
 	if (c2t_hccs_thresholdMet(TEST_ITEM))
 		return true;
 
-	if (have_effect($effect[Apriling Band Celebration Bop]) == 0) {
-		cli_execute("aprilband effect drop");
-	}
+	
 
 	if (c2t_hccs_thresholdMet(TEST_ITEM))
 		return true;
