@@ -563,7 +563,7 @@ boolean c2t_hccs_preCoil() {
 	item workshed = get_property("c2t_hccs_workshed").to_item();
 	if (workshed != $item[none] && get_workshed() == $item[none]) {
 		//sanity check
-		if ($items[cold medicine cabinet,diabolic pizza cube,model train set,Asdon Martin keyfob] contains workshed)
+		if ($items[cold medicine cabinet,diabolic pizza cube,model train set,Asdon Martin keyfob (on ring)] contains workshed)
 			use(workshed);
 	}
 
@@ -805,6 +805,11 @@ boolean c2t_hccs_preCoil() {
 	} else if (available_amount($item[cold-filtered water]) == 0 && have_effect($effect[Purity of Spirit]) == 0
 	&& c2t_hccs_tomeClipArt($item[cold-filtered water])) {
 		use(1,$item[cold-filtered water]);
+	}
+
+	//aprilband
+	if (have_effect($effect[Apriling Band Patrol Beat]) == 0) {
+		cli_execute("aprilband effect nc");
 	}
 
 	
@@ -1140,7 +1145,7 @@ boolean c2t_hccs_preItem() {
 	cli_execute("shrug ur-kel");
 
 	//Asdon Martin drive observantly
-	if (get_workshed() == $item[Asdon Martin keyfob] && have_effect($effect[driving observantly]) == 0) {
+	if (get_workshed() == $item[Asdon Martin keyfob (on ring)] && have_effect($effect[driving observantly]) == 0) {
 		while (get_fuel() < 37) {
 			//fuel up
 			if (available_amount($item[20-lb can of rice and beans]) > 0) {
@@ -1274,6 +1279,13 @@ boolean c2t_hccs_preItem() {
 	retrieve_item(1,$item[oversized sparkler]);
 	//repeat of previous maximize call
 	maximize('item,2 booze drop,-equip broken champagne bottle,-equip surprisingly capacious handbag,-equip red-hot sausage fork,switch left-hand man',false);
+	if (c2t_hccs_thresholdMet(TEST_ITEM))
+		return true;
+
+	if (have_effect($effect[Apriling Band Celebration Bop]) == 0) {
+		cli_execute("aprilband effect drop");
+	}
+
 	if (c2t_hccs_thresholdMet(TEST_ITEM))
 		return true;
 	
@@ -1487,7 +1499,7 @@ boolean c2t_hccs_preFamiliar() {
 		cli_execute("/equip familiar homemade robot gear");
 		highest = $familiar[Comma Chameleon];
 	}
-	else if (have_familiar($familiar[Mini-Trainbot]) && c2t_hccs_tomeClipArt($item[box of familiar jacks])) {
+	else if (have_familiar($familiar[Mini-Trainbot]) && (c2t_hccs_tomeClipArt($item[box of familiar jacks]) || available_amount($item[overloaded Yule battery]) > 0)) {
 		//third tome use //box of familiar jacks
 		use_familiar($familiar[Mini-Trainbot]);
 		use(1,$item[box of familiar jacks]);
@@ -1608,7 +1620,7 @@ boolean c2t_hccs_preNoncombat() {
 		return true;
 
 	//asdonmartin drive stealthily
-	if (get_workshed() == $item[Asdon Martin keyfob] && have_effect($effect[driving stealthily]) == 0) {
+	if (get_workshed() == $item[Asdon Martin keyfob (on ring)] && have_effect($effect[driving stealthily]) == 0) {
 		while (get_fuel() < 37) {
 			//fuel up
 			if (available_amount($item[20-lb can of rice and beans]) > 0) {
@@ -2705,7 +2717,7 @@ void c2t_hccs_fights() {
 	
 
 	//Asdonfuel
-	if (get_workshed() == $item[Asdon Martin keyfob] && have_effect($effect[driving observantly]) == 0) {
+	if (get_workshed() == $item[Asdon Martin keyfob (on ring)] && have_effect($effect[driving observantly]) == 0) {
 		int fuelTarget = 37 * 2;
 		while (get_fuel() < fuelTarget) {
 			//fuel up
