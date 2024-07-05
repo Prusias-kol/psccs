@@ -559,8 +559,15 @@ boolean c2t_hccs_preCoil() {
 			// stuffed yam stinkbomb
 			cli_execute("mayam rings vessel yam cheese explosion");
 			// remainder
-			// also consider fur instead of chair for fam exp. 
-			cli_execute("mayam rings chair meat eyepatch yam");
+			if (have_familiar($familiar[chest mimic])) {
+				// xp for chest mimic
+				use_familiar($familiar[chest mimic]);
+				cli_execute("mayam rings fur meat eyepatch yam");
+			} else {
+				// free rests for cincho/mp
+				cli_execute("mayam rings chair meat eyepatch yam");
+			}
+			
 		}
 	}
 
