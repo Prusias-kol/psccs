@@ -551,6 +551,19 @@ boolean c2t_hccs_preCoil() {
 	//numberology first thing to get adventures
 	c2t_hccs_useNumberology();
 
+	// mayam calendar
+	if (item_amount($item[Mayam Calendar]) > 0) {
+		if (get_property("mayamSymbolsUsed") == "") {
+			// yam battery
+			cli_execute("mayam rings yam lightning yam clock");
+			// stuffed yam stinkbomb
+			cli_execute("mayam rings vessel yam cheese explosion");
+			// remainder
+			// also consider fur instead of chair for fam exp. 
+			cli_execute("mayam rings chair meat eyepatch yam");
+		}
+	}
+
 	//activate zones
 	if (!get_property("_prusias_psccs_charterZonesUnlocked").to_boolean()) {
 		if (get_property("stenchAirportAlways").to_boolean()) {
@@ -706,6 +719,7 @@ boolean c2t_hccs_preCoil() {
 		if (c2t_hccs_pizzaCube())
 			autosell(5,$item[porquoise]);
 	}
+
 	if (my_meat() < 1500)
 		autosell(1,$item[porquoise]);
 
