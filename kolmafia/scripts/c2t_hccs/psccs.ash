@@ -553,7 +553,7 @@ boolean c2t_hccs_preCoil() {
 
 	// mayam calendar
 	if (item_amount($item[Mayam Calendar]) > 0) {
-		if (get_property("mayamSymbolsUsed") == "") {
+		if (get_property("_mayamSymbolsUsed") == "") {
 			// yam battery
 			cli_execute("mayam rings yam lightning yam clock");
 			// stuffed yam stinkbomb
