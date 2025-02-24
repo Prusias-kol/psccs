@@ -940,6 +940,7 @@ boolean c2t_hccs_levelup() {
 		if (item_amount($item[familiar scrapbook]) > 0)
 			equip($item[familiar scrapbook]);
 		c2t_hccs_haveUse($item[a ten-percent bonus]);
+		cli_execute("refresh all");
 	}
 	if (my_level() < 7)
 		abort('initial leveling broke');
