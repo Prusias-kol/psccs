@@ -80,6 +80,7 @@ void c2t_hccs_printTestData();
 void c2t_hccs_testData(string testType,int testNum,int turnsTaken,int turnsExpected);
 familiar c2t_hccs_levelingFamiliar(boolean safeOnly);
 boolean acquireInnerElf();
+int webScrapeAdvCost(int whichtest);
 
 
 void main() {
