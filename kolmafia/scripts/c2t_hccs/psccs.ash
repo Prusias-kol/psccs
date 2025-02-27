@@ -409,7 +409,12 @@ int c2t_hccs_testTurns(int test) {
 			return (60 - floor((numeric_modifier('familiar weight')+familiar_weight(my_familiar()))/5));
 		case TEST_WEAPON:
 			num = (have_effect($effect[bow-legged swagger]) > 0?25:50);
-			return (60 - floor(numeric_modifier('weapon damage') / num + 0.001) - floor(numeric_modifier('weapon damage percent') / num + 0.001));
+			int calc_wep_val =  (60 - floor(numeric_modifier('weapon damage') / num + 0.001) - floor(numeric_modifier('weapon damage percent') / num + 0.001));
+			int scrape_wep_val = webScrapeAdvCost(test);
+			if (scrape_wep_val < calc_wep_val)
+				return scrape_wep_val;
+			else
+				return calc_wep_val;
 		case TEST_SPELL:
 			return (60 - floor(numeric_modifier('spell damage') / 50 + 0.001) - floor(numeric_modifier('spell damage percent') / 50 + 0.001));
 		case TEST_NONCOMBAT:
