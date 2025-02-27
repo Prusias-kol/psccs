@@ -321,8 +321,11 @@ void c2t_hccs_testHandler(int test) {
 		turns = 1;
 	}
 
-	if (!met)
+	if (!met) {
+		print("Attempting to web scrape for comparison");
+		print("Web parse result: "+ webScrapeAdvCost(test));
 		abort(`Pre-{TEST_NAME[test]} ({type}) test fail. Currently only can complete the test in {turns} {turns==1?"turn":"turns"}.`);
+	}
 
 	if (test != TEST_COIL_WIRE)
 		print(`Test {test}: {TEST_NAME[test]} ({type}) is at or below the threshold at {turns} {turns==1?"turn":"turns"}. Running the task...`);
@@ -553,7 +556,7 @@ boolean c2t_hccs_preCoil() {
 
 	// mayam calendar
 	if (item_amount($item[Mayam Calendar]) > 0) {
-		if (get_property("_mayamSymbolsUsed") == "") {
+		if (get_property("mayamSymbolsUsed") == "") {
 			// yam battery
 			cli_execute("mayam rings yam lightning yam clock");
 			// stuffed yam stinkbomb
