@@ -285,6 +285,10 @@ void c2t_hccs_testHandler(int test) {
 			met = c2t_hccs_preWeapon();
 			type = "weapon";
 			c2t_hccs_mod2log("modtrace weapon damage");
+			if (!met && webScrapeAdvCost(TEST_WEAPON) == 1) {
+				print("Web scrape value is 1 turn for weapon. Overriding.");
+				met = true;
+			}
 			break;
 		case TEST_SPELL:
 			met = c2t_hccs_preSpell();
@@ -411,10 +415,14 @@ int c2t_hccs_testTurns(int test) {
 			num = (have_effect($effect[bow-legged swagger]) > 0?25:50);
 			int calc_wep_val =  (60 - floor(numeric_modifier('weapon damage') / num + 0.001) - floor(numeric_modifier('weapon damage percent') / num + 0.001));
 			int scrape_wep_val = webScrapeAdvCost(test);
-			if (scrape_wep_val < calc_wep_val)
+			print("Web scrape value: "+scrape_wep_val);
+			print("Calculated value: "+calc_wep_val);
+			if (scrape_wep_val < calc_wep_val) {
+				print("Web scrape value is lower than calculated value. Using web scrape value.");
 				return scrape_wep_val;
-			else
+			} else {
 				return calc_wep_val;
+			}
 		case TEST_SPELL:
 			return (60 - floor(numeric_modifier('spell damage') / 50 + 0.001) - floor(numeric_modifier('spell damage percent') / 50 + 0.001));
 		case TEST_NONCOMBAT:
@@ -440,6 +448,7 @@ int webScrapeAdvCost(int whichtest) {
     string pagestr = substring(page, page.index_of(teststr)+length(teststr), page.index_of(teststr)+length(teststr)+chars);
     string advstr = substring(pagestr, pagestr.index_of("(")+1, pagestr.index_of("(")+3);
     advstr = replace_string(advstr, " ", ""); //removes whitespace, if the test is < 10 adv
+	print("Webscrape found " + to_int(advstr) + " turns for test " + whichtest);
     return to_int(advstr);
   } else {
     print("[ERROR] Didn't find specified test on the council page. Already done?");
