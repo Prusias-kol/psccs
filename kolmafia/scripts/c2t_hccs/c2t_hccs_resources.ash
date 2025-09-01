@@ -7,7 +7,7 @@ import <c2t_lib.ash>
 import <c2t_hccs_lib.ash>
 import <c2t_reminisce.ash>
 import <c2t_hccs_preAdv.ash>
-
+import <liba_beret.ash>
 
 //some of these resources can be "disabled" via a property. check c2t_hccs_properties.ash at the bottom under "disable resources" for a full list
 
@@ -16,6 +16,7 @@ import <c2t_hccs_preAdv.ash>
   function declarations
   -=-+-=-+-=-+-=-+-=-+-=-*/
 //d--backup camera
+//d--beret
 //d--briefcase
 //d--cartography
 //d--clover item
@@ -45,6 +46,13 @@ boolean c2t_hccs_backupCamera();
 
 //returns number of uses left
 int c2t_hccs_backupCameraLeft();
+
+//d--beret
+//returns true if have prismatic beret
+boolean c2t_hccs_beret_have();
+
+//returns number of busks casts
+int c2t_hccs_beret(float[modifier] modWeight,float[effect] effWeight,boolean onlyNewEffects);
 
 
 //d--briefcase
@@ -218,6 +226,7 @@ void c2t_hccs_vote();
   function implementations
   -=-+-=-+-=-+-=-+-=-+-=-*/
 //i--backup camera
+//i--beret
 //i--briefcase
 //i--cartography
 //i--clover item
@@ -250,6 +259,37 @@ int c2t_hccs_backupCameraLeft() {
 	if (!c2t_hccs_backupCamera())
 		return 0;
 	return 11-get_property('_backUpUses').to_int();
+}
+
+//i--beret
+boolean c2t_hccs_beret_have() {
+	return liba_beret_have()
+		&& !get_property("c2t_hccs_disable.beret").to_boolean();
+}
+int c2t_hccs_beret(float[modifier] modWeight,float[effect] effWeight,boolean onlyNewEffects) {
+	if (!c2t_hccs_beret_have()
+		|| liba_beret_left() <= 0)
+	{
+		return 0;
+	}
+	liba_beret_sim sim = liba_beret_simInit(modWeight,effWeight,onlyNewEffects);
+
+	//add pants that can be bought from NPC shops //TODO: find better way to do this
+	foreach pant in $items[
+		//armory and leggery
+		studded leather boxer shorts,
+		chain-mail monokini,
+		union scalemail pants,
+		paper-plate-mail pants,
+		troutpiece,
+		alpha-mail pants]
+	{
+		int power = pant.get_power();
+		if (!(sim.pants contains power))
+			sim.pants[power] = pant;
+	}
+
+	return liba_beret(5,sim);
 }
 
 

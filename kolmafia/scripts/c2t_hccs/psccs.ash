@@ -1,6 +1,6 @@
 //psccs
 
-since r27280;//closed-circuit pay phone
+since r28686;//beret 
 
 import <c2t_hccs_lib.ash>
 import <c2t_hccs_resources.ash>
@@ -2076,6 +2076,16 @@ boolean c2t_hccs_preSpell() {
 
 	//unbreakable umbrella
 	c2t_hccs_unbreakableUmbrella("spell");
+
+	//prismatic beret
+	c2t_hccs_beret(
+		float[modifier]{
+			$modifier[spell damage]:1,
+			$modifier[spell damage percent]:1,
+			},
+		float[effect]{},
+		true
+	);
 
 	print("maximizing", "red");
 	maximize('spell damage,switch left-hand man',false);
