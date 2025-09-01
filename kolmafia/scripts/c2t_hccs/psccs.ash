@@ -2265,6 +2265,46 @@ boolean c2t_hccs_preMox() {
 	return c2t_hccs_thresholdMet(TEST_MOX);
 }
 
+//Mmm-brr mouthwash
+void c2t_hccs_mouthwash() {
+	if (get_property("_psccs_mouthwashUsed").to_boolean() == true 
+	|| available_amount($item[Sept-Ember Censer]) == 0 
+	|| get_property("availableSeptEmbers").to_int() == 0) {
+		return;
+	}
+	cli_execute("make Mmm-brr! brand mouthwash");
+	if (available_amount($item[beach comb]) > 0)
+		c2t_hccs_getEffect($effect[Cold as Nice]);
+	
+	c2t_hccs_getEffect($effect[elemental saucesphere]);
+	c2t_hccs_getEffect($effect[Feeling Peaceful]);
+	//Scarysauce
+	c2t_hccs_getEffect($effect[Scarysauce]);
+
+	c2t_hccs_haveUse($item[cyan seashell]);
+	if (have_effect($effect[Minor Invulnerability]) == 0)
+		c2t_hccs_haveUse($item[scroll of minor invulnerability]);
+
+	if (have_familiar($familiar[Cooler Yeti])) {
+		use_familiar($familiar[Cooler Yeti]);
+	} else if (have_familiar($familiar[Exotic Parrot])) {
+		use_familiar($familiar[Exotic Parrot]);
+	}
+
+	//Replace with kgb soon
+	if (available_amount($item[bembershoot]) == 0
+	&& get_property("availableSeptEmbers").to_int() > 0)
+		cli_execute("make bembershoot");
+
+	// ski iotm
+	c2t_hccs_haveUse($item[McHugeLarge duffel bag]);
+
+	maximize("cold res", false);
+		
+	cli_execute("use Mmm-brr! brand mouthwash");
+	set_property("_psccs_mouthwashUsed", "true");
+}
+
 //Leveling fights
 void c2t_hccs_fights() {
 	string fam;
@@ -2505,6 +2545,9 @@ void c2t_hccs_fights() {
 			c2t_hccs_haveUse($skill[Bind Lasagmbie]);
 		}
 	}
+	//mouthwash before scalars
+	c2t_hccs_mouthwash();
+	//SCALARS BEGIN
 	//locket 1 Witchess Witch for battle broom
 	//If ever removed, look at oliver's den bowl sideways. Atm, it leaves 2 NEP fights without bowl sideways.
 	if (available_amount($item[Battle broom]) == 0) {
