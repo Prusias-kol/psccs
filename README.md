@@ -10,7 +10,9 @@ This is a continual work-in-progress. It is not likely to run out-of-the-box for
 
 To install, run the following on the gCLI:
 
-`git checkout https://github.com/Prusias-kol/psccs master`
+```
+git checkout https://github.com/Prusias-kol/psccs master
+```
 
 ## PSCCS Loadout
 * I run as a PM with Wallaby, astral 6-pack, and astral chapeau in SC CS.
