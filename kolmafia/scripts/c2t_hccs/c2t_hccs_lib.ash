@@ -38,6 +38,9 @@ boolean c2t_hccs_haveUse(int n,skill ski);
 //returns whether a cleaver adventure is now or not
 boolean c2t_hccs_isCleaverNow();
 
+//return whether a resource is disabled by the user
+boolean c2t_hccs_isDisabled(string shortPrefName);
+
 //joinclan
 //mostly a wrapper for c2t_joinClan()
 boolean c2t_hccs_joinClan(string s);
@@ -93,10 +96,8 @@ boolean c2t_hccs_getEffect(effect eff) {
 		return true;
 
 	string cmd = eff.default;
-	string tmp;
 	skill ski;
 	item ite;
-	string [int] spl;
 
 	if (cmd.starts_with("cargo "))
 		foreach x in eff.all
@@ -110,10 +111,13 @@ boolean c2t_hccs_getEffect(effect eff) {
 	}
 
 	if (cmd.starts_with("cast ")) {
-		spl = cmd.split_string(" ");
-		for i from 2 to spl.count()-1
-			tmp += i == 2?spl[i]:` {spl[i]}`;
-		ski = tmp.to_skill();
+		//Effect defaults can include an equipment qualifier after ^.
+		matcher m = create_matcher("cast 1 ([^\\^]*)",cmd);
+		if (!m.find()) {
+			print(`Could not find a skill to get "{eff}"`,"red");
+			return false;
+		}
+		ski = m.group(1).to_skill();
 
 		if (!c2t_hccs_haveUse(ski)) {
 			print(`Info: don't have the skill "{ski}" to get the "{eff}" effect`);
@@ -121,17 +125,18 @@ boolean c2t_hccs_getEffect(effect eff) {
 		}
 	}
 	else if (cmd.starts_with("use ")) {
-		spl = cmd.split_string(" ");
-
 		//short circuit until i figure out how to deal with this
-		if (spl[1] == "either") {
+		if (cmd.starts_with("use either ")) {
 			cli_execute(cmd);
 			return have_effect(eff).to_boolean();
 		}
 
-		for i from 2 to spl.count()-1
-			tmp += i == 2?spl[i]:` {spl[i]}`;
-		ite = tmp.to_item();
+		matcher m = create_matcher("use 1 (.*)",cmd);
+		if (!m.find()) {
+			print(`Could not find an item to get "{eff}"`,"red");
+			return false;
+		}
+		ite = m.group(1).to_item();
 
 		if (!retrieve_item(ite)) {
 			print(`Info: "{ite}" not retrieved to get "{eff}"`);
@@ -186,6 +191,10 @@ boolean c2t_hccs_haveUse(int n,skill ski) {
 
 boolean c2t_hccs_isCleaverNow() {
 	return get_property("_juneCleaverFightsLeft").to_int() <= 0;
+}
+
+boolean c2t_hccs_isDisabled(string shortPrefName) {
+	return get_property(`c2t_hccs_disable.{shortPrefName}`).to_boolean();
 }
 
 boolean c2t_hccs_joinClan(string s) {

@@ -9,6 +9,7 @@ import <c2t_hccs_aux.ash>
 import <c2t_hccs_preAdv.ash>
 import <c2t_lib.ash>
 import <c2t_cast.ash>
+import <liba_eternityCodpiece.ash>
 
 int START_TIME = now_to_int();
 
@@ -81,6 +82,7 @@ void c2t_hccs_testData(string testType,int testNum,int turnsTaken,int turnsExpec
 familiar c2t_hccs_levelingFamiliar(boolean safeOnly);
 boolean acquireInnerElf();
 int webScrapeAdvCost(int whichtest);
+boolean c2t_hccs_getPyramidPower();
 
 
 void main() {
@@ -387,7 +389,6 @@ void c2t_hccs_printTestData() {
 		print("");
 	}
 	print("Summary of tests:", "teal");
-	print("Casting simmering took 1 turn.");
 	foreach i,x in split_string(get_property("_c2t_hccs_testData"),";") {
 		d = split_string(x,",");
 		print(`{d[0]} test took {d[2]} turn(s){to_int(d[1]) > 4 && to_int(d[3]) < 1?"; it's being overcapped by "+(1-to_int(d[3]))+" turn(s) of resources":""}`);
@@ -606,6 +607,9 @@ boolean c2t_hccs_preCoil() {
 			use(workshed);
 	}
 
+	//Make the useful gems available even when left in the codpiece before ascending.
+	liba_eternityCodpiece_take($items[blood cubic zirconia,heartstone,peridot of peril]);
+
 	//get a grain of sand for pizza if muscle class
 	if (available_amount($item[beach comb]) > 0
 		&& my_primestat() == $stat[muscle]
@@ -749,8 +753,8 @@ boolean c2t_hccs_preCoil() {
 	if (my_meat() < 1500)
 		autosell(1,$item[porquoise]);
 
-	//buy toy accordion
-	if (my_class() != $class[accordion thief])
+	//buy toy accordion if needed
+	if (my_class() != $class[accordion thief] && available_amount($item[legendary acorndion]) == 0)
 		retrieve_item(1,$item[toy accordion]);
 
 	// equip mp stuff
@@ -1096,6 +1100,9 @@ boolean c2t_hccs_allTheBuffs() {
 			print("Failed to synthesize stat buff","red");
 	}
 
+	//heartstone
+	c2t_hccs_heartstone($effect[ultraheart]);
+
 	//third tome use //no longer using bee's knees for stat boost on non-moxie, but still need same strength buff?
 	if (my_mp() < 11)
 		cli_execute('rest free');
@@ -1112,6 +1119,7 @@ boolean c2t_hccs_allTheBuffs() {
 	//TODO: check mp
 	use_skill(1, $skill[Leash of Linguini]);
 	use_skill(1, $skill[Empathy of the Newt]);
+	c2t_hccs_getEffect($effect[only dogs love a drunken sailor]);
 
 	//telescope
 	if (get_property("telescopeUpgrades").to_int() > 0 && !get_property("telescopeLookedHigh").to_boolean())
@@ -1267,6 +1275,7 @@ boolean c2t_hccs_preItem() {
 		cli_execute('latte refill cinnamon carrot vanilla');
 
 	c2t_hccs_getEffect($effect[fat leon's phat loot lyric]);
+	c2t_hccs_getEffect($effect[who's going to pay this drunken sailor?]);
 	c2t_hccs_getEffect($effect[singer's faithful ocelot]);
 	c2t_hccs_getEffect($effect[the spirit of taking]);
 
@@ -1284,7 +1293,10 @@ boolean c2t_hccs_preItem() {
 		if (my_class() != $class[pastamancer]) {
 			if (my_mp() < 250)
 				cli_execute('eat magical sausage');
-			c2t_hccs_getEffect($effect[spice haze]);
+			if (available_amount($item[legendary pasta wand]) > 0)
+				c2t_hccs_getEffect($effect[legendary spice haze]);
+			else
+				c2t_hccs_getEffect($effect[spice haze]);
 		}
 	}
 
@@ -1319,6 +1331,11 @@ boolean c2t_hccs_preItem() {
 		return true;
 
 	//THINGS I DON'T ALWAYS WANT TO USE FOR ITEM TEST
+	if (c2t_hccs_alliedRadio($effect[materiel intel])) {
+		maximize(maxstr,false);
+		if (c2t_hccs_thresholdMet(TEST_ITEM))
+			return true;
+	}
 
 
 	retrieve_item(1,$item[oversized sparkler]);
@@ -1392,6 +1409,7 @@ boolean c2t_hccs_preHotRes() {
 	c2t_hccs_getEffect($effect[blood bond]);
 	c2t_hccs_getEffect($effect[leash of linguini]);
 	c2t_hccs_getEffect($effect[empathy]);
+	c2t_hccs_getEffect($effect[only dogs love a drunken sailor]);
 
 	maximize(maxstr,false);
 	// need to run this twice because familiar weight thresholds interfere with it?
@@ -1456,6 +1474,10 @@ boolean c2t_hccs_preHotRes() {
 
 	//synthesis: hot
 	if (c2t_hccs_sweetSynthesis($effect[synthesis: hot]) && c2t_hccs_thresholdMet(TEST_HOT_RES))
+		return true;
+
+	//allied radio
+	if (c2t_hccs_alliedRadio($effect[wildsun boon]) && c2t_hccs_thresholdMet(TEST_HOT_RES))
 		return true;
 
 	//pillkeeper
@@ -1527,6 +1549,7 @@ boolean c2t_hccs_preFamiliar() {
 	c2t_hccs_getEffect($effect[blood bond]);
 	c2t_hccs_getEffect($effect[leash of linguini]);
 	c2t_hccs_getEffect($effect[empathy]);
+	c2t_hccs_getEffect($effect[only dogs love a drunken sailor]);
 
 	//AT-only buff
 	if (my_class() == $class[accordion thief] && have_skill($skill[chorale of companionship]))
@@ -1570,6 +1593,11 @@ boolean c2t_hccs_preFamiliar() {
 	else
 		use_familiar(highest);
 
+	//heartstone's familiar buff applies to the familiar selected above.
+	liba_eternityCodpiece_set($item[heartstone]);
+	c2t_hccs_heartstone($effect[best pals]);
+	c2t_hccs_alliedRadio($effect[wildsun boon]);
+
 	//Use reward from NC test, silver face paint
 	if (available_amount($item[8552])> 0) {
 		use(1, $item[8552]);
@@ -1598,6 +1626,7 @@ boolean c2t_hccs_preNoncombat() {
 	c2t_hccs_getEffect($effect[blood bond]);
 	c2t_hccs_getEffect($effect[leash of linguini]);
 	c2t_hccs_getEffect($effect[empathy]);
+	c2t_hccs_getEffect($effect[only dogs love a drunken sailor]);
 
 	// Pool buff. Will no longer fall through to weapon due to familiar test after NC
 	//not going to use this here, as it doesn't do to the noncombat rate in the moment anyway. Disgeist > 75 lb
@@ -1661,6 +1690,10 @@ boolean c2t_hccs_preNoncombat() {
 	maximize('-100combat,familiar weight',false);
 	maximize('-100combat,familiar weight',false);
 	if (c2t_hccs_thresholdMet(TEST_NONCOMBAT))
+		return true;
+
+	//mobius ring potion
+	if (c2t_hccs_haveUse($item[life goals pamphlet]) && c2t_hccs_thresholdMet(TEST_NONCOMBAT))
 		return true;
 
 	//asdonmartin drive stealthily
@@ -1853,6 +1886,9 @@ boolean c2t_hccs_preWeapon() {
 
 	c2t_hccs_getEffect($effect[bow-legged swagger]);
 
+	//Keep enough base Muscle for the stick-knife pull and outfit.
+	c2t_hccs_bloodCubicZirconia($effect[bloodbathed],my_basestat($stat[muscle]) >= 150 ? 150 : 0);
+
 	//briefcase
 	//c2t_hccs_briefcase("weapon");//this is the default, but just in case
 
@@ -1896,6 +1932,8 @@ boolean c2t_hccs_preWeapon() {
 		return true;
 	
 	//can do fish hatchet here if needed
+	if (c2t_hccs_getPyramidPower() && c2t_hccs_thresholdMet(TEST_WEAPON))
+		return true;
 
 	//cargo shorts as backup
 	if (available_amount($item[cargo cultist shorts]) > 0
@@ -1924,9 +1962,8 @@ boolean c2t_hccs_preSpell() {
 	// if spit upon == 1, simmering will just waste a turn to do essentially nothing.
 	// probably good idea to add check for similar effects to not just waste a turn
 	if (have_effect($effect[spit upon]) != 1 && have_effect($effect[do you crush what i crush?]) != 1 && have_effect($effect[Inner Elf]) != 1) {
-		if (have_effect($effect[simmering]) == 0 && available_amount($item[April Shower Thoughts shield]) > 0)
-			cli_execute("try; equip off-hand April Shower Thoughts shield");
-		c2t_hccs_getEffect($effect[simmering]);
+		if (!c2t_hccs_aprilShield($effect[simmering]))
+			c2t_hccs_getEffect($effect[simmering]);
 	}
 
 	while (c2t_hccs_wandererFight()); //check for after using a turn to cast Simmering
@@ -2039,6 +2076,11 @@ boolean c2t_hccs_preSpell() {
 		}
 	}
 
+	//Optional spell buffs; protect the base Mysticality used by the staff outfits.
+	c2t_hccs_alliedRadio($effect[wildsun boon]);
+	int mys = my_basestat($stat[mysticality]);
+	c2t_hccs_bloodCubicZirconia($effect[up to 11],mys >= 250 ? 250 : (mys >= 200 ? 200 : (mys >= 125 ? 125 : 0)));
+
 	//if I ever feel like blowing the resources:
 	if (get_property('_c2t_hccs_dstab').to_boolean()) {
 		//the only way is all the way
@@ -2082,6 +2124,9 @@ boolean c2t_hccs_preSpell() {
 	//unbreakable umbrella
 	c2t_hccs_unbreakableUmbrella("spell");
 
+	//Only rest while a free campground rest is available.
+	c2t_hccs_getPyramidPower();
+
 	//prismatic beret
 	c2t_hccs_beret(
 		float[modifier]{
@@ -2091,6 +2136,8 @@ boolean c2t_hccs_preSpell() {
 		float[effect]{},
 		true
 	);
+
+	liba_eternityCodpiece_setAll($item[eye of the tiger-lily]);
 
 	print("maximizing", "red");
 	maximize('spell damage,switch left-hand man',false);
@@ -3030,9 +3077,34 @@ boolean c2t_hccs_testDone(int test) {
 void c2t_hccs_doTest(int test) {
 	if (!c2t_hccs_testDone(test)) {
 		visit_url('council.php');
-		visit_url('choice.php?pwd&whichchoice=1089&option='+test,true,true);
+		//The final service may report an error after it has already succeeded.
+		string err = catch visit_url('choice.php?pwd&whichchoice=1089&option='+test,true,true);
+		if (err != "")
+			print(err);
 		c2t_assert(c2t_hccs_testDone(test),`Failed to do test {test}. Out of turns?`);
 	}
 	else
 		print(`Test {test} already done.`);
 }
+
+boolean c2t_hccs_getPyramidPower() {
+	if (have_effect($effect[pyramid power]) > 0)
+		return true;
+	if (!(get_campground() contains $item[bricko pyramid]))
+		return false;
+	if (get_property("_pyramidRestEffectsGained").to_int() >= 3)
+		return false;
+	if (get_property("timesRested").to_int() >= total_free_rests())
+		return false;
+	//familiar juggling for bonus knucklebone
+	familiar socp = $familiar[skeleton of crimbo past];
+	familiar fam = my_familiar();
+	item eq = equipped_item($slot[familiar]);
+	if (have_familiar(socp))
+		use_familiar(socp);
+	cli_execute("camp rest free campground");
+	use_familiar(fam);
+	equip($slot[familiar],eq);
+	return have_effect($effect[pyramid power]) > 0;
+}
+

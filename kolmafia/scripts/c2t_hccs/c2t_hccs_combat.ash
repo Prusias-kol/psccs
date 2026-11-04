@@ -255,6 +255,14 @@ void main(int initround, monster foe, string page) {
 				c2t_bbSubmit(mHead.c2t_hccs_bowlSideways().c2t_hccs_portscan() + mBasic);
 				return;
 
+			//mobius ring wanderer: retry the free adventure it interrupted
+			case $monster[time cop]: {
+				location loc = my_location();
+				c2t_bbSubmit(mHead + mSteal + mBasic);
+				c2t_freeAdv(loc);
+				return;
+			}
+
 			//most basic of combats
 			case $monster[piranha plant]:
 			case $monster[government bureaucrat]:

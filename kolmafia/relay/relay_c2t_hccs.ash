@@ -31,6 +31,9 @@ void main() {
 		};
 
 	string [string] disableable = {
+		"c2t_hccs_disable.alliedRadio":"will skip using the allied radio for effects",
+		"c2t_hccs_disable.beret":"will not use prismatic beret busking",
+		"c2t_hccs_disable.synthesisItem":"will not get the item drop buff from sweet synthesis",
 		"c2t_hccs_prusias_disable.levelingSynthesis" : "will not use a sweet synth to get bonus exp %",
 		"c2t_hccs_disable.backupCamera":"will not use the 'back-up to your last enemy' skill",
 		"c2t_hccs_disable.briefcase":"no cranks will be used; however, banishes may still be used",

@@ -1,6 +1,9 @@
 //c2t hccs choices
 //c2t
 
+import <c2t_lib.ash>
+
+void c2t_hccs_choiceMobiusRing(string page);
 
 void main (int id,string page) {
 	int testsDone = get_property("csServicesPerformed").split_string(",").count();
@@ -274,6 +277,13 @@ void main (int id,string page) {
 			}
 			abort("labyrinth of shadows broke or just super unlucky?");
 			break;
+		//Time is a Möbius Strip
+		case 1562:
+			c2t_hccs_choiceMobiusRing(page);
+			//The ring interrupted the intended free adventure.
+			c2t_freeAdv(my_location());
+			break;
+
 		//halloweiner dog
 		case 1106:
 			run_choice(3);
@@ -286,3 +296,42 @@ void main (int id,string page) {
 			break;
 	}
 }
+
+void c2t_hccs_choiceMobiusRing(string page) {
+	//just going to increase paradoxicity--only ever going to get few in-run anyway
+	int pick = 1;
+	foreach i,paradox in string[int]{
+		"Stop your arch-nemesis as a baby",			//+ potion combat -5
+		"Go back and take a 20-year-long nap",			//+ effect mp 30, mys 15
+		"Lift yourself up by your bootstraps",			//+ mus stats
+		"Borrow meat from your future",				//+ 1000 meat
+		"Go back and write a best-seller.",			//+ effect mox 25
+		"Steal a cupcake from young Susie",			//+ food epic size 1
+		"Borrow a cup of sugar from yourself",			//+ food good size 1
+		"Shoot yourself in the foot",				//+ mox stats
+		"Mind your own business",				//+ mys stats
+		"Give your past self investment tips",			//+ item stock certificate
+		"Plant some trees and harvest them in the future",	//+ item 5 random fruit
+		"Steal a club from the past",				//+ item random club
+		"Hey, free gun!",					//+ item the gun w/ weapon damage 50
+		"Plant some seeds in the distant past",			//+ effect hp 30, mus 15
+		"Go for a nature walk",					//+ effect 9 mp regen
+		"Draw a goatee on yourself",				//+ effect 5 stats per fight
+		"Cheeze it, it's the pigs!",				//+ effect mus -30, hp -15
+		"Peek in on your future",				//+ effect weapon drop 100%
+		"Meet your parents when they were young",		//+ effect mox -15, init -50
+		"Defend yourself",					//+ effect mp -10, init 50
+		"Play Schroedinger's Prank on yourself",		//+ effect varies every turn
+		"Take the long odds on the trifecta",			//+ effect Marked by the Don
+		"Make friends with a famous poet",			//+ effect that breaks kolmafia tracking (anapests)
+		}
+	{
+		matcher m = create_matcher(`value=(\\d+)><input\\s+class=button\\s+type=submit\\s+value="{paradox}"`,page);
+		if (m.find()) {
+			pick = m.group(1).to_int();
+			break;
+		}
+	}
+	run_choice(pick);
+}
+

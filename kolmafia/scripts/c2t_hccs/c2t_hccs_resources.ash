@@ -7,7 +7,11 @@ import <c2t_lib.ash>
 import <c2t_hccs_lib.ash>
 import <c2t_reminisce.ash>
 import <c2t_hccs_preAdv.ash>
+import <liba_alliedRadio.ash>
+import <liba_aprilShield.ash>
 import <liba_beret.ash>
+import <liba_bloodCubicZirconia.ash>
+import <liba_heartstone.ash>
 
 //some of these resources can be "disabled" via a property. check c2t_hccs_properties.ash at the bottom under "disable resources" for a full list
 
@@ -15,6 +19,10 @@ import <liba_beret.ash>
 /*-=-+-=-+-=-+-=-+-=-+-=-
   function declarations
   -=-+-=-+-=-+-=-+-=-+-=-*/
+//d--allied radio
+//d--april shower thoughts shield
+//d--blood cubic zirconia
+//d--heartstone
 //d--backup camera
 //d--beret
 //d--briefcase
@@ -39,6 +47,19 @@ import <liba_beret.ash>
 //d--vip floundry
 //d--vote
 
+
+//d--allied radio
+boolean c2t_hccs_alliedRadio_have();
+boolean c2t_hccs_alliedRadio(effect eff);
+
+//d--april shower thoughts shield
+boolean c2t_hccs_aprilShield(effect eff);
+
+//d--blood cubic zirconia
+boolean c2t_hccs_bloodCubicZirconia(effect eff,int keepStatAbove);
+
+//d--heartstone
+boolean c2t_hccs_heartstone(effect eff);
 
 //d--backup camera
 //returns true if have backup camera
@@ -225,6 +246,10 @@ void c2t_hccs_vote();
 /*-=-+-=-+-=-+-=-+-=-+-=-
   function implementations
   -=-+-=-+-=-+-=-+-=-+-=-*/
+//i--allied radio
+//i--april shower thoughts shield
+//i--blood cubic zirconia
+//i--heartstone
 //i--backup camera
 //i--beret
 //i--briefcase
@@ -250,6 +275,51 @@ void c2t_hccs_vote();
 //i--vote
 
 
+//i--allied radio
+boolean c2t_hccs_alliedRadio_have() {
+	return liba_alliedRadio_have() && !c2t_hccs_isDisabled("alliedRadio");
+}
+boolean c2t_hccs_alliedRadio(effect eff) {
+	if (have_effect(eff) > 0)
+		return true;
+	if (!c2t_hccs_alliedRadio_have())
+		return false;
+	return liba_alliedRadio(eff);
+}
+
+//i--april shower thoughts shield
+boolean c2t_hccs_aprilShield(effect eff) {
+	if (have_effect(eff) > 0)
+		return true;
+	if (!liba_aprilShield_have() || !can_equip($item[April Shower Thoughts shield]))
+		return false;
+	if (eff == $effect[simmering] && get_property("_aprilShowerSimmer").to_boolean())
+		return false;
+	//Keep the shield optional; liba handles two-handed weapons and restores equipment.
+	string err = catch liba_aprilShield(eff);
+	if (err != "")
+		print(`April Shower Thoughts shield: {err}`,"red");
+	return have_effect(eff) > 0;
+}
+
+//i--blood cubic zirconia
+boolean c2t_hccs_bloodCubicZirconia(effect eff,int keepStatAbove) {
+	if (have_effect(eff) > 0)
+		return true;
+	if (!liba_bloodCubicZirconia_have())
+		return false;
+	liba_bloodCubicZirconia(eff,keepStatAbove);
+	return have_effect(eff) > 0;
+}
+
+//i--heartstone
+boolean c2t_hccs_heartstone(effect eff) {
+	if (have_effect(eff) > 0)
+		return true;
+	liba_heartstone(eff);
+	return have_effect(eff) > 0;
+}
+
 //i--backup camera
 boolean c2t_hccs_backupCamera() {
 	return available_amount($item[backup camera]) > 0
@@ -273,6 +343,12 @@ int c2t_hccs_beret(float[modifier] modWeight,float[effect] effWeight,boolean onl
 		return 0;
 	}
 	liba_beret_sim sim = liba_beret_simInit(modWeight,effWeight,onlyNewEffects);
+	if (get_property("_c2t_hccs_beretSaveStateForLaterCalcs").to_boolean()) {
+		map_to_file(sim.hats,"cs_beret_sim_hats.txt");
+		map_to_file(sim.shirts,"cs_beret_sim_shirts.txt");
+		map_to_file(sim.pants,"cs_beret_sim_pants.txt");
+		map_to_file(sim.effects,"cs_beret_sim_effects.txt");
+	}
 
 	//add pants that can be bought from NPC shops //TODO: find better way to do this
 	foreach pant in $items[
@@ -355,8 +431,8 @@ boolean c2t_hccs_cloverItem() {
 		return true;
 	c2t_assert(my_adventures() > 0,"no adventures for limerick dungeon lucky adventure");
 
-	//11-leaf clover
-	if (have_effect($effect[lucky!]) == 0) {
+	//heartstone or 11-leaf clover
+	if (!c2t_hccs_heartstone($effect[lucky!])) {
 		hermit(1,$item[11-leaf clover]);
 		use($item[11-leaf clover]);
 	}
@@ -790,6 +866,8 @@ boolean c2t_hccs_sweetSynthesis(effect eff) {
 			return false;
 
 		case $effect[synthesis: collection]://item
+			if (c2t_hccs_isDisabled("synthesisItem"))
+				return false;
 			if (!c2t_hccs_gardenPeppermint())
 				return false;
 			it1 = $item[peppermint sprout];
