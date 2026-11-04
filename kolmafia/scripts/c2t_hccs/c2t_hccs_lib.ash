@@ -111,7 +111,7 @@ boolean c2t_hccs_getEffect(effect eff) {
 	}
 
 	if (cmd.starts_with("cast ")) {
-		//Effect defaults can include an equipment qualifier after ^.
+		//Parse the skill for ownership and MP checks, retaining the complete action.
 		matcher m = create_matcher("cast 1 ([^\\^]*)",cmd);
 		if (!m.find()) {
 			print(`Could not find a skill to get "{eff}"`,"red");
@@ -119,10 +119,14 @@ boolean c2t_hccs_getEffect(effect eff) {
 		}
 		ski = m.group(1).to_skill();
 
-		if (!c2t_hccs_haveUse(ski)) {
+		if (!have_skill(ski)) {
 			print(`Info: don't have the skill "{ski}" to get the "{eff}" effect`);
 			return false;
 		}
+		if (my_mp() < mp_cost(ski))
+			c2t_hccs_restoreMp();
+		//The ^ effect qualifier lets KoLmafia select and restore the required equipment.
+		cli_execute(cmd);
 	}
 	else if (cmd.starts_with("use ")) {
 		//short circuit until i figure out how to deal with this
