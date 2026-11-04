@@ -23,11 +23,6 @@ string c2t_hccs_portscan(string m);
 
 void main(int initround, monster foe, string page) {
 	print("Turncount is " + my_adventures());
-	//saber force
-	if (have_effect($effect[meteor showered]) > 0 || have_effect($effect[fireproof foam suit]) > 0) {
-		c2t_bb($skill[use the force]).c2t_bbSubmit();
-		return;
-	}
 
 	string mHead = "scrollwhendone;";
 	string mSteal = "pickpocket;";
@@ -58,6 +53,20 @@ void main(int initround, monster foe, string page) {
 
 	//basic macro/what to run when nothing special needs be done
 	string mBasic =	mBasicTop + mBasicBot;
+
+	//Handle this wanderer before any familiar, location, or buff-specific setup.
+	if (foe == $monster[time cop]) {
+		location loc = my_location();
+		c2t_bbSubmit(mHead + mSteal + mBasic);
+		c2t_freeAdv(loc);
+		return;
+	}
+
+	//saber force
+	if (have_effect($effect[meteor showered]) > 0 || have_effect($effect[fireproof foam suit]) > 0) {
+		c2t_bb($skill[use the force]).c2t_bbSubmit();
+		return;
+	}
 
 	//mostly mBasic with relativity sprinkled in and small heal to help moxie survive chaining
 	string mChain =
@@ -254,14 +263,6 @@ void main(int initround, monster foe, string page) {
 			case $monster[Thinker of Thoughts]:
 				c2t_bbSubmit(mHead.c2t_hccs_bowlSideways().c2t_hccs_portscan() + mBasic);
 				return;
-
-			//mobius ring wanderer: retry the free adventure it interrupted
-			case $monster[time cop]: {
-				location loc = my_location();
-				c2t_bbSubmit(mHead + mSteal + mBasic);
-				c2t_freeAdv(loc);
-				return;
-			}
 
 			//most basic of combats
 			case $monster[piranha plant]:
