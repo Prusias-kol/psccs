@@ -90,6 +90,7 @@ void main() {
 		c2t_hccs_init();
 
 		c2t_hccs_testHandler(TEST_COIL_WIRE);
+		// ROUTE BEGIN
 
 		//TODO maybe reorder stat tests based on hardest to achieve for a given class or mainstat
 		print('Checking test ' + TEST_MOX + ': ' + TEST_NAME[TEST_MOX],'blue');
@@ -1579,6 +1580,7 @@ boolean c2t_hccs_preFamiliar() {
 		use(1, $item[green candy heart]);
 	}
 
+
 	maximize('familiar weight',false);
 	if (c2t_hccs_thresholdMet(TEST_FAMILIAR))
 		return true;
@@ -1918,11 +1920,14 @@ boolean c2t_hccs_preSpell() {
 		cli_execute("use Cordial of Concentration");
 	}
 
-	// This will use an adventure.
+	// This can use an adventure unless the April Shower Thoughts shield makes it free.
 	// if spit upon == 1, simmering will just waste a turn to do essentially nothing.
 	// probably good idea to add check for similar effects to not just waste a turn
-	if (have_effect($effect[spit upon]) != 1 && have_effect($effect[do you crush what i crush?]) != 1 && have_effect($effect[Inner Elf]) != 1)
+	if (have_effect($effect[spit upon]) != 1 && have_effect($effect[do you crush what i crush?]) != 1 && have_effect($effect[Inner Elf]) != 1) {
+		if (have_effect($effect[simmering]) == 0 && available_amount($item[April Shower Thoughts shield]) > 0)
+			cli_execute("try; equip off-hand April Shower Thoughts shield");
 		c2t_hccs_getEffect($effect[simmering]);
+	}
 
 	while (c2t_hccs_wandererFight()); //check for after using a turn to cast Simmering
 	//ALL ADVENTURE SPENDING STUFF DONE NOW
@@ -2026,11 +2031,11 @@ boolean c2t_hccs_preSpell() {
 		//PM can pull stick knife of loathing with elbow macaroni
 		//USES OUTFIT GLITCH WITH AN OUTFIT NAMED CS_PM_stickknife_glitch
 		if (available_amount($item[Staff of the Roaring Hearth])>0) {
-			cli_execute("outfit CS_PM_roaringhearth_glitch");
+			cli_execute("try; outfit CS_PM_roaringhearth_glitch");
 		} else if(available_amount($item[Staff of Kitchen Royalty])>0) {
-			cli_execute("outfit CS_PM_kitchenroyalty_glitch");
+			cli_execute("try; outfit CS_PM_kitchenroyalty_glitch");
 		} else if (available_amount($item[Staff of Simmering Hatred]) > 0) {
-			cli_execute("outfit CS_PM_simmering_glitch");
+			cli_execute("try; outfit CS_PM_simmering_glitch");
 		}
 	}
 
@@ -2080,8 +2085,8 @@ boolean c2t_hccs_preSpell() {
 	//prismatic beret
 	c2t_hccs_beret(
 		float[modifier]{
-			$modifier[spell damage]:1,
-			$modifier[spell damage percent]:1,
+			$modifier[spell damage]:0.02,
+			$modifier[spell damage percent]:0.02,
 			},
 		float[effect]{},
 		true
@@ -2094,9 +2099,9 @@ boolean c2t_hccs_preSpell() {
 		//PM can pull stick knife of loathing with elbow macaroni
 		//USES OUTFIT GLITCH WITH AN OUTFIT NAMED CS_PM_stickknife_glitch
 		if (available_amount($item[Staff of the Roaring Hearth])>0) {
-			cli_execute("outfit CS_PM_roaringhearth_glitch");
+			cli_execute("try; outfit CS_PM_roaringhearth_glitch");
 		} else if(available_amount($item[Staff of Kitchen Royalty])>0) {
-			cli_execute("outfit CS_PM_kitchenroyalty_glitch");
+			cli_execute("try; outfit CS_PM_kitchenroyalty_glitch");
 		}	}
 
 	return c2t_hccs_thresholdMet(TEST_SPELL);
